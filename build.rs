@@ -1,4 +1,24 @@
+use std::io;
+use std::io::Write;
+use std::process;
+
 fn main() {
+  // Downloads olcPixelGameEngine.h file.
+  // If you have issues downloading the file, you can add the file in the project root
+  // and comment out this step.
+  let output = process::Command::new("curl")
+    .arg("-O")
+    .arg("--fail")
+    .arg("https://raw.githubusercontent.com/sadikovi/olcPixelGameEngine-macos/master/olcPixelGameEngine.h")
+    .output()
+    .expect("Failed to execute process");
+
+  println!("status: {}", output.status);
+  io::stdout().write_all(&output.stdout).unwrap();
+  io::stderr().write_all(&output.stderr).unwrap();
+  assert!(output.status.success());
+
+  // Builds Rust binding together with olcPixelGameEngine.h.
   cc::Build::new()
     .cpp(true)
     .include("/usr/X11/include")
