@@ -26,12 +26,32 @@ typedef struct {
 
 typedef olc::Pixel::Mode PixelMode;
 
+typedef struct {
+  // Set once during the frame the event occurs
+  bool pressed;
+  // Set once during the frame the event occurs
+  bool released;
+  // Set true for all frames between pressed and released events
+  bool held;
+} HWButton;
+
+typedef olc::Key Key;
+
 typedef struct { int32_t x; int32_t y; } Vi2d;
 typedef struct { uint32_t x; uint32_t y; } Vu2d;
 typedef struct { float x; float y; } Vf2d;
 typedef struct { double x; double y; } Vd2d;
 
-#define OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
+#define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
+#define TO_HWBUTTON(b) (toHWButton(b))
+
+static inline HWButton toHWButton(olc::HWButton b) {
+  HWButton res;
+  res.pressed = b.bPressed;
+  res.released = b.bReleased;
+  res.held = b.bHeld;
+  return res;
+}
 
 // Useful utility functions
 int32_t c_rand();
@@ -41,6 +61,19 @@ int32_t c_rand();
 RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h, int32_t pixel_w, int32_t pixel_h, bool full_screen, bool vsync);
 
 // olcPixelGameEngine API
+
+// Returns true if window is currently in focus
+bool IsFocused();
+// Get the state of a specific keyboard button
+HWButton GetKey(Key k);
+// Get the state of a specific mouse button
+HWButton GetMouse(uint32_t b);
+// Get Mouse X coordinate in "pixel" space
+int32_t GetMouseX();
+// Get Mouse Y coordinate in "pixel" space
+int32_t GetMouseY();
+// Get Mouse Wheel Delta
+int32_t GetMouseWheel();
 
 // Returns the width of the screen in "pixels"
 int32_t ScreenWidth();

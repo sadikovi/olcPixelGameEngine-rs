@@ -56,6 +56,34 @@ impl Pixel {
   }
 }
 
+/// Mirror of `olc::HWButton`. Represents the button state, either keyboard or mouse.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct HWButton {
+  /// Set once during the frame the event occurs.
+  pub pressed: bool,
+  /// Set once during the frame the event occurs.
+  pub released: bool,
+  /// Set true for all frames between pressed and released events.
+  pub held: bool
+}
+
+/// Mirror of `olc::Key`. Represents key of a keyboard.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[allow(non_camel_case_types)]
+pub enum Key {
+  NONE,
+  A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+  K0, K1, K2, K3, K4, K5, K6, K7, K8, K9,
+  F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+  UP, DOWN, LEFT, RIGHT,
+  SPACE, TAB, SHIFT, CTRL, INS, DEL, HOME, END, PGUP, PGDN,
+  BACK, ESCAPE, RETURN, ENTER, PAUSE, SCROLL,
+  NP0, NP1, NP2, NP3, NP4, NP5, NP6, NP7, NP8, NP9,
+  NP_MUL, NP_DIV, NP_ADD, NP_SUB, NP_DECIMAL, PERIOD
+}
+
 #[link(name="olcRustBindingApp", kind="static")]
 extern "C" {
   /// Utility c++ rand function.
@@ -66,6 +94,18 @@ extern "C" {
   pub fn start(name: *const c_char, binding: *mut c_void, screen_w: i32, screen_h: i32, pixel_w: i32, pixel_h: i32, full_screen: bool, vsync: bool) -> RCode;
 
   // olcPixelGameEngine API
+
+  pub fn IsFocused() -> bool;
+  // Get the state of a specific keyboard button
+  pub fn GetKey(k: Key) -> HWButton;
+  // Get the state of a specific mouse button
+  pub fn GetMouse(b: u32) -> HWButton;
+  // Get Mouse X coordinate in "pixel" space
+  pub fn GetMouseX() -> i32;
+  // Get Mouse Y coordinate in "pixel" space
+  pub fn GetMouseY() -> i32;
+  // Get Mouse Wheel Delta
+  pub fn GetMouseWheel() -> i32;
 
   // Returns the width of the screen in "pixels"
   pub fn ScreenWidth() -> i32;

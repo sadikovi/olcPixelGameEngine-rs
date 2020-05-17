@@ -38,10 +38,11 @@
 
 mod cpp;
 
-// Public export of PixelMode so it can be used as an API.
+// Public export of cpp module structs and enums so they can be used as an API.
 pub use cpp::PixelMode;
-// Public export of Pixel so it can be used as an API.
 pub use cpp::Pixel;
+pub use cpp::HWButton;
+pub use cpp::Key;
 
 use std::ffi::CString;
 use std::fmt;
@@ -223,6 +224,36 @@ pub const VERY_DARK_MAGENTA: Pixel = Pixel::rgb(64, 0, 64);
 pub const WHITE: Pixel = Pixel::rgb(255, 255, 255);
 pub const BLACK: Pixel = Pixel::rgb(0, 0, 0);
 pub const BLANK: Pixel = Pixel::rgba(0, 0, 0, 0);
+
+/// Whether or not the window is focused.
+pub fn is_focused() -> bool {
+  unsafe { cpp::IsFocused() }
+}
+
+/// Returns the state of a specific keyboard button.
+pub fn get_key(k: Key) -> HWButton {
+  unsafe { cpp::GetKey(k) }
+}
+
+/// Returns the state of a specific mouse button.
+pub fn get_mouse(b: u32) -> HWButton {
+  unsafe { cpp::GetMouse(b) }
+}
+
+/// Returns mouse X coordinate in "pixel" space.
+pub fn get_mouse_x() -> i32 {
+  unsafe { cpp::GetMouseX() }
+}
+
+/// Returns mouse Y coordinate in "pixel" space.
+pub fn get_mouse_y() -> i32 {
+  unsafe { cpp::GetMouseY() }
+}
+
+/// Returns mouse wheel delta.
+pub fn get_mouse_wheel() -> i32 {
+  unsafe { cpp::GetMouseWheel() }
+}
 
 /// Returns the width of the screen in "pixels".
 pub fn screen_width() -> i32 {
