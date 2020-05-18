@@ -102,7 +102,7 @@ extern "C" fn onUserDestroy(binding: *mut cpp::c_void) -> bool {
 //----------------------------------
 
 /// Mirror of `olc::Sprite`.
-/// Represents sprite in the pixel game engine.
+/// Represents a sprite in the pixel game engine.
 #[derive(Debug)]
 pub struct Sprite {
   inner: cpp::Sprite
@@ -493,13 +493,28 @@ pub fn fill_triangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pi
 }
 
 /// Draws an entire sprite at the location (x, y).
+#[inline]
 pub fn draw_sprite(x: i32, y: i32, sprite: &Sprite) {
-  unsafe { cpp::DrawSprite(x, y, &sprite.inner, 1, SpriteFlip::NONE) }
+  draw_sprite_with_scale_and_flip(x, y, sprite, 1, SpriteFlip::NONE)
 }
 
 /// Draws an entire sprite at the location (x, y) with provided scale and flip.
 pub fn draw_sprite_with_scale_and_flip(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip) {
   unsafe { cpp::DrawSprite(x, y, &sprite.inner, scale, flip) }
+}
+
+/// Draws an area of a sprite at location (x, y), where the selected area is (ox, oy) to (ox+w, oy+h).
+#[inline]
+pub fn draw_partial_sprite(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32) {
+  draw_partial_sprite_with_scale_and_flip(x, y, sprite, ox, oy, w, h, 1, SpriteFlip::NONE)
+}
+
+/// Draws an area of a sprite at location (x, y), where the selected area is (ox, oy) to (ox+w, oy+h)
+/// with provided scale and flip.
+pub fn draw_partial_sprite_with_scale_and_flip(
+  x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip
+) {
+  unsafe { cpp::DrawPartialSprite(x, y, &sprite.inner, ox, oy, w, h, scale, flip) }
 }
 
 /// Draws string.

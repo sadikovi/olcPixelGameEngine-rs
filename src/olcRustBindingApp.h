@@ -185,10 +185,9 @@ void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, in
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
 // Draws an entire sprite at well in my defencelocation (x,y)
 void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale, SpriteFlip flip);
-// // Draws an area of a sprite at location (x,y), where the
-// // selected area is (ox,oy) to (ox+w,oy+h)
-// void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
-// void DrawPartialSprite(const olc::vi2d& pos, Sprite *sprite, const olc::vi2d& sourcepos, const olc::vi2d& size, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
+// Draws an area of a sprite at location (x,y), where the
+// selected area is (ox,oy) to (ox+w,oy+h)
+void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale, SpriteFlip flip);
 // // Draws a whole decal, with optional scale and tinting
 // void DrawDecal(const olc::vf2d& pos, olc::Decal *decal, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
 // // Draws a region of a decal, with optional scale and tinting

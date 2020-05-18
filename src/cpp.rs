@@ -34,7 +34,7 @@ pub enum PixelMode {
 
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
-/// Mirror of `olc::Pixel`.
+/// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
 pub struct Pixel {
   pub r: u8,
   pub g: u8,
@@ -66,7 +66,7 @@ pub struct HWButton {
   pub held: bool
 }
 
-/// Mirror of `olc::Key`. Represents key of a keyboard.
+/// Mirror of `olc::Key`. Represents a key on a keyboard.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[allow(non_camel_case_types)]
@@ -194,6 +194,9 @@ extern "C" {
   pub fn FillTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
   // Draws an entire sprite at well in my defencelocation (x,y)
   pub fn DrawSprite(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip);
+  // Draws an area of a sprite at location (x,y), where the
+  // selected area is (ox,oy) to (ox+w,oy+h)
+  pub fn DrawPartialSprite(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip);
 
   pub fn DrawString(x: i32, y: i32, sText: *const c_char, col: Pixel, scale: u32);
   // Clears entire draw target to Pixel

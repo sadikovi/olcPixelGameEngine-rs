@@ -105,6 +105,7 @@ void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) { app.FillRec
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p) { app.DrawTriangle(x1, y1, x2, y2, x3, y3, TO_OLC_PIXEL(p)); }
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p) { app.FillTriangle(x1, y1, x2, y2, x3, y3, TO_OLC_PIXEL(p)); }
 void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale, SpriteFlip flip) { app.DrawSprite(x, y, TO_OLC_SPRITE(sprite), scale, flip); }
+void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale, SpriteFlip flip) { app.DrawPartialSprite(x, y, TO_OLC_SPRITE(sprite), ox, oy, w, h, scale, flip); }
 
 void DrawString(int32_t x, int32_t y, const char* sText, Pixel col, uint32_t scale) { app.DrawString(x, y, sText, TO_OLC_PIXEL(col), scale); }
 void Clear(Pixel p) { app.Clear(TO_OLC_PIXEL(p)); }
