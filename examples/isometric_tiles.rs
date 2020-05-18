@@ -126,8 +126,8 @@ impl olc::Application for IsometricTiles {
     // Draw Selected Cell - Has varying alpha components
     olc::set_pixel_mode(olc::PixelMode::ALPHA);
 
-		// Convert selected cell coordinate to world space
-		let selected_world_coords = to_screen(selected.0, selected.1);
+    // Convert selected cell coordinate to world space
+    let selected_world_coords = to_screen(selected.0, selected.1);
 
     // Draw "highlight" tile
     olc::draw_partial_sprite(selected_world_coords.0, selected_world_coords.1, &self.sprite, 0 * TILE_SIZE.0, 0, TILE_SIZE.0, TILE_SIZE.1);
