@@ -33,7 +33,7 @@ pub enum PixelMode {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 /// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
 pub struct Pixel {
   pub r: u8,
