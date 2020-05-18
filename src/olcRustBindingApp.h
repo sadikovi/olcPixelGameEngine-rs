@@ -35,14 +35,24 @@ typedef struct {
 
 typedef olc::Key Key;
 
+typedef struct {
+  olc::Sprite* olc_sprite;
+} Sprite;
+
+typedef olc::Sprite::Mode SpriteMode;
+typedef olc::Sprite::Flip SpriteFlip;
+
 typedef struct { int32_t x; int32_t y; } Vi2d;
 typedef struct { uint32_t x; uint32_t y; } Vu2d;
 typedef struct { float x; float y; } Vf2d;
 typedef struct { double x; double y; } Vd2d;
 
 #define TO_RCODE(code) (toRCode(code))
+#define TO_PIXEL(p) (toPixel(p))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
 #define TO_HWBUTTON(b) (toHWButton(b))
+#define TO_SPRITE(s) (toSprite(s))
+#define TO_OLC_SPRITE(s) (s->olc_sprite)
 
 static inline RCode toRCode(olc::rcode code) {
   switch (code) {
@@ -51,12 +61,28 @@ static inline RCode toRCode(olc::rcode code) {
     case olc::rcode::OK: return RCode::OK;
   }
 }
+
+static inline Pixel toPixel(olc::Pixel p) {
+  Pixel res;
+  res.r = p.r;
+  res.g = p.g;
+  res.b = p.b;
+  res.a = p.a;
+  return res;
+}
+
 static inline HWButton toHWButton(olc::HWButton b) {
   HWButton res;
   res.pressed = b.bPressed;
   res.released = b.bReleased;
   res.held = b.bHeld;
   return res;
+}
+
+static inline Sprite toSprite(olc::Sprite* ptr) {
+  Sprite s;
+  s.olc_sprite = ptr;
+  return s;
 }
 
 // Useful utility functions
@@ -67,6 +93,31 @@ int32_t c_rand();
 RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h, int32_t pixel_w, int32_t pixel_h, bool full_screen, bool vsync);
 
 // olcPixelGameEngine API
+
+// Creates a new sprite with dimensions
+Sprite SpriteConstructor(int32_t w, int32_t h);
+// Calls destructor on the underlying olc sprite
+void SpriteDestructor(Sprite* s);
+// Loads image into the sprite
+RCode SpriteLoadFromFile(Sprite* s, const char* image_file);
+// Returns sprite width
+int32_t SpriteWidth(Sprite* s);
+// Returns sprite height
+int32_t SpriteHeight(Sprite* s);
+// Returns true if data pointer is not null
+bool SpriteHasData(Sprite* s);
+// Sets sample mode for the sprite
+void SpriteSetSampleMode(Sprite* s, SpriteMode mode);
+// Returns sample mode of the sprite
+SpriteMode SpriteGetSampleMode(Sprite* s);
+// Returns sprite pixel at (x, y)
+Pixel SpriteGetPixel(Sprite* s, int32_t x, int32_t y);
+// Sets sprite pixel at (x, y)
+bool  SpriteSetPixel(Sprite* s, int32_t x, int32_t y, Pixel p);
+// Sprite sample for (x, y)
+Pixel SpriteSample(Sprite* s, float x, float y);
+// Sprite sample BL for (u, v)
+Pixel SpriteSampleBL(Sprite* s, float u, float v);
 
 // Returns true if window is currently in focus
 bool IsFocused();
@@ -132,9 +183,8 @@ void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p);
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
 // Flat fills a triangle between points (x1,y1), (x2,y2) and (x3,y3)
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
-// // Draws an entire sprite at well in my defencelocation (x,y)
-// void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
-// void DrawSprite(const olc::vi2d& pos, Sprite *sprite, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);
+// Draws an entire sprite at well in my defencelocation (x,y)
+void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale, SpriteFlip flip);
 // // Draws an area of a sprite at location (x,y), where the
 // // selected area is (ox,oy) to (ox+w,oy+h)
 // void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale = 1, uint8_t flip = olc::Sprite::NONE);

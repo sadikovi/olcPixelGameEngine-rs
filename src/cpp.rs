@@ -82,6 +82,33 @@ pub enum Key {
   NP_MUL, NP_DIV, NP_ADD, NP_SUB, NP_DECIMAL, PERIOD
 }
 
+// Internal sprite datastructure.
+// Does not support Clone and Copy due to Drop freeing the underlying olc sprite.
+#[repr(C)]
+#[derive(Debug, PartialEq)]
+pub struct Sprite {
+  olc_sprite: *const c_void
+}
+
+/// Mirror of `olc::Sprite::Mode`.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[allow(non_camel_case_types)]
+pub enum SpriteMode {
+  NORMAL,
+  PERIODIC
+}
+
+/// Mirror of `olc::Sprite::Flip`.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+#[allow(non_camel_case_types)]
+pub enum SpriteFlip {
+  NONE,
+  HORIZ,
+  VERT
+}
+
 #[link(name="olcRustBindingApp", kind="static")]
 extern "C" {
   /// Utility c++ rand function.
@@ -90,6 +117,21 @@ extern "C" {
   /// Starts the main game loop.
   // Default values: full_screen = false and vsync = false
   pub fn start(name: *const c_char, binding: *mut c_void, screen_w: i32, screen_h: i32, pixel_w: i32, pixel_h: i32, full_screen: bool, vsync: bool) -> RCode;
+
+  // Sprite API
+
+  pub fn SpriteConstructor(w: i32, h: i32) -> Sprite;
+  pub fn SpriteDestructor(s: &Sprite);
+  pub fn SpriteLoadFromFile(s: &Sprite, image_file: *const c_char) -> RCode;
+  pub fn SpriteWidth(s: &Sprite) -> i32;
+  pub fn SpriteHeight(s: &Sprite) -> i32;
+  pub fn SpriteHasData(s: &Sprite) -> bool;
+  pub fn SpriteSetSampleMode(s: &Sprite, mode: SpriteMode);
+  pub fn SpriteGetSampleMode(s: &Sprite) -> SpriteMode;
+  pub fn SpriteGetPixel(s: &Sprite, x: i32, y: i32) -> Pixel;
+  pub fn SpriteSetPixel(s: &Sprite, x: i32, y: i32, p: Pixel) -> bool;
+  pub fn SpriteSample(s: &Sprite, x: c_float, y: c_float) -> Pixel;
+  pub fn SpriteSampleBL(s: &Sprite, u: c_float, v: c_float) -> Pixel;
 
   // olcPixelGameEngine API
 
@@ -150,6 +192,8 @@ extern "C" {
   pub fn DrawTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
   // Flat fills a triangle between points (x1, y1), (x2, y2) and (x3, y3)
   pub fn FillTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
+  // Draws an entire sprite at well in my defencelocation (x,y)
+  pub fn DrawSprite(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip);
 
   pub fn DrawString(x: i32, y: i32, sText: *const c_char, col: Pixel, scale: u32);
   // Clears entire draw target to Pixel

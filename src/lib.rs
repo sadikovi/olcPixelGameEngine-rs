@@ -43,6 +43,8 @@ pub use cpp::PixelMode;
 pub use cpp::Pixel;
 pub use cpp::HWButton;
 pub use cpp::Key;
+pub use cpp::SpriteMode;
+pub use cpp::SpriteFlip;
 
 use std::ffi::CString;
 use std::fmt;
@@ -98,6 +100,104 @@ extern "C" fn onUserDestroy(binding: *mut cpp::c_void) -> bool {
 //----------------------------------
 // Public API
 //----------------------------------
+
+/// Mirror of `olc::Sprite`.
+/// Represents sprite in the pixel game engine.
+#[derive(Debug)]
+pub struct Sprite {
+  inner: cpp::Sprite
+}
+
+impl Sprite {
+  /// Creates a new empty sprite.
+  pub fn new() -> Self {
+    Self::with_dims(0, 0)
+  }
+
+  /// Creates an empty sprite with dimensions `width` x `height`.
+  pub fn with_dims(width: i32, height: i32) -> Self {
+    let inner = unsafe { cpp::SpriteConstructor(width, height) };
+    Self { inner }
+  }
+
+  /// Loads a sprite from the image.
+  /// Returns error if the image could be loaded.
+  pub fn from_image(path: &str) -> Result<Self, Error> {
+    let image = CString::new(path)?;
+    let inner = unsafe { cpp::SpriteConstructor(0, 0) };
+    let res = unsafe { cpp::SpriteLoadFromFile(&inner, image.as_ptr()) };
+    match res {
+      cpp::RCode::FAIL =>
+        Err(Error { msg: format!("Failed to load the sprite") }),
+      cpp::RCode::NO_FILE =>
+        Err(Error { msg: format!("Failed to load the sprite: No such file '{}'", path) }),
+      cpp::RCode::OK => {
+        Ok(Self { inner })
+      }
+    }
+  }
+
+  /// Returns width of the sprite.
+  pub fn width(&self) -> i32 {
+    unsafe { cpp::SpriteWidth(&self.inner) }
+  }
+
+  /// Returns height of the sprite.
+  pub fn height(&self) -> i32 {
+    unsafe { cpp::SpriteHeight(&self.inner) }
+  }
+
+  /// Returns true if sprite has data.
+  pub fn has_data(&self) -> bool {
+    unsafe { cpp::SpriteHasData(&self.inner) }
+  }
+
+  /// Returns sample mode for the sprite.
+  pub fn sample_mode(&self) -> SpriteMode {
+    unsafe { cpp::SpriteGetSampleMode(&self.inner) }
+  }
+
+  /// Sets sample mode.
+  pub fn set_sample_mode(&mut self, mode: SpriteMode) {
+    unsafe { cpp::SpriteSetSampleMode(&self.inner, mode) }
+  }
+
+  /// Returns pixel at (x, y).
+  pub fn get_pixel(&self, x: i32, y: i32) -> Pixel {
+    unsafe { cpp::SpriteGetPixel(&self.inner, x, y) }
+  }
+
+  /// Sets pixel at (x, y).
+  pub fn set_pixel(&mut self, x: i32, y: i32, p: Pixel) -> bool {
+    unsafe { cpp::SpriteSetPixel(&self.inner, x, y, p) }
+  }
+
+  /// Samples sprite for `x` and `y`,
+  /// `x` and `y` should be between 0.0 and 1.0.
+  pub fn sample(&self, x: f32, y: f32) -> Pixel {
+    unsafe { cpp::SpriteSample(&self.inner, x, y) }
+  }
+
+  /// Sample BL for `u` and `v`.
+  pub fn sample_bl(&self, u: f32, v: f32) -> Pixel {
+    unsafe { cpp::SpriteSampleBL(&self.inner, u, v) }
+  }
+}
+
+impl fmt::Display for Sprite {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "sprite {}x{}, mode: {:?}, has_data: {}",
+      self.width(), self.height(), self.sample_mode(), self.has_data())
+  }
+}
+
+impl Drop for Sprite {
+  fn drop(&mut self) {
+    unsafe {
+      cpp::SpriteDestructor(&self.inner);
+    }
+  }
+}
 
 #[derive(Clone, Debug)]
 /// olcPixelGameEngine error.
@@ -390,6 +490,16 @@ pub fn draw_triangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pi
 /// Flat fills a triangle between points (x1, y1), (x2, y2) and (x3, y3).
 pub fn fill_triangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel) {
   unsafe { cpp::FillTriangle(x1, y1, x2, y2, x3, y3, p) }
+}
+
+/// Draws an entire sprite at the location (x, y).
+pub fn draw_sprite(x: i32, y: i32, sprite: &Sprite) {
+  unsafe { cpp::DrawSprite(x, y, &sprite.inner, 1, SpriteFlip::NONE) }
+}
+
+/// Draws an entire sprite at the location (x, y) with provided scale and flip.
+pub fn draw_sprite_with_scale_and_flip(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip) {
+  unsafe { cpp::DrawSprite(x, y, &sprite.inner, scale, flip) }
 }
 
 /// Draws string.

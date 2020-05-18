@@ -57,6 +57,19 @@ RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h,
   return TO_RCODE(res);
 }
 
+Sprite SpriteConstructor(int32_t w, int32_t h) { return TO_SPRITE(new olc::Sprite(w, h)); }
+void SpriteDestructor(Sprite* s) { delete s->olc_sprite; }
+RCode SpriteLoadFromFile(Sprite* s, const char* image_file) { return TO_RCODE(TO_OLC_SPRITE(s)->LoadFromFile(image_file)); }
+int32_t SpriteWidth(Sprite* s) { return TO_OLC_SPRITE(s)->width; }
+int32_t SpriteHeight(Sprite* s) { return TO_OLC_SPRITE(s)->height; }
+bool SpriteHasData(Sprite* s) { return TO_OLC_SPRITE(s)->pColData != nullptr; }
+void SpriteSetSampleMode(Sprite* s, SpriteMode mode) { TO_OLC_SPRITE(s)->SetSampleMode(mode); }
+SpriteMode SpriteGetSampleMode(Sprite* s) { return TO_OLC_SPRITE(s)->modeSample; }
+Pixel SpriteGetPixel(Sprite* s, int32_t x, int32_t y) { return TO_PIXEL(TO_OLC_SPRITE(s)->GetPixel(x, y)); }
+bool  SpriteSetPixel(Sprite* s, int32_t x, int32_t y, Pixel p) { return TO_OLC_SPRITE(s)->SetPixel(x, y, TO_OLC_PIXEL(p)); }
+Pixel SpriteSample(Sprite* s, float x, float y) { return TO_PIXEL(TO_OLC_SPRITE(s)->Sample(x, y)); }
+Pixel SpriteSampleBL(Sprite* s, float u, float v) { return TO_PIXEL(TO_OLC_SPRITE(s)->SampleBL(u, v)); }
+
 bool IsFocused() { return app.IsFocused(); }
 HWButton GetKey(Key k) { return TO_HWBUTTON(app.GetKey(k)); }
 HWButton GetMouse(uint32_t b) { return TO_HWBUTTON(app.GetMouse(b)); }
@@ -91,6 +104,7 @@ void DrawRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) { app.DrawRec
 void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) { app.FillRect(x, y, w, h, TO_OLC_PIXEL(p)); }
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p) { app.DrawTriangle(x1, y1, x2, y2, x3, y3, TO_OLC_PIXEL(p)); }
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p) { app.FillTriangle(x1, y1, x2, y2, x3, y3, TO_OLC_PIXEL(p)); }
+void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale, SpriteFlip flip) { app.DrawSprite(x, y, TO_OLC_SPRITE(sprite), scale, flip); }
 
 void DrawString(int32_t x, int32_t y, const char* sText, Pixel col, uint32_t scale) { app.DrawString(x, y, sText, TO_OLC_PIXEL(col), scale); }
 void Clear(Pixel p) { app.Clear(TO_OLC_PIXEL(p)); }
