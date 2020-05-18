@@ -10,10 +10,8 @@ bool onUserUpdate(void* binding, float elapsed_time);
 bool onUserDestroy(void* binding);
 
 typedef enum {
-  CONSTRUCT_FAIL,
-  CONSTRUCT_NO_FILE,
-  START_FAIL,
-  START_NO_FILE,
+  FAIL,
+  NO_FILE,
   OK
 } RCode;
 
@@ -42,9 +40,17 @@ typedef struct { uint32_t x; uint32_t y; } Vu2d;
 typedef struct { float x; float y; } Vf2d;
 typedef struct { double x; double y; } Vd2d;
 
+#define TO_RCODE(code) (toRCode(code))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
 #define TO_HWBUTTON(b) (toHWButton(b))
 
+static inline RCode toRCode(olc::rcode code) {
+  switch (code) {
+    case olc::rcode::FAIL: return RCode::FAIL;
+    case olc::rcode::NO_FILE: return RCode::NO_FILE;
+    case olc::rcode::OK: return RCode::OK;
+  }
+}
 static inline HWButton toHWButton(olc::HWButton b) {
   HWButton res;
   res.pressed = b.bPressed;

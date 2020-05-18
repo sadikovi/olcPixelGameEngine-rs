@@ -12,10 +12,8 @@ pub type c_void = std::ffi::c_void;
 #[allow(non_camel_case_types)]
 #[allow(dead_code)]
 pub enum RCode {
-  CONSTRUCT_FAIL,
-  CONSTRUCT_NO_FILE,
-  START_FAIL,
-  START_NO_FILE,
+  FAIL,
+  NO_FILE,
   OK
 }
 

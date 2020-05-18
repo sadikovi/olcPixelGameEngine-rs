@@ -171,13 +171,9 @@ pub fn start_with_full_screen_and_vsync(
   };
 
   match res {
-    cpp::RCode::CONSTRUCT_FAIL =>
-      Err(Error { msg: format!("Failed to construct the application: FAIL") }),
-    cpp::RCode::CONSTRUCT_NO_FILE =>
-      Err(Error { msg: format!("Failed to construct the application: NO_FILE") }),
-    cpp::RCode::START_FAIL =>
+    cpp::RCode::FAIL =>
       Err(Error { msg: format!("Failed to start the application: FAIL") }),
-    cpp::RCode::START_NO_FILE =>
+    cpp::RCode::NO_FILE =>
       Err(Error { msg: format!("Failed to start the application: NO_FILE") }),
     cpp::RCode::OK =>
       Ok(())

@@ -51,20 +51,10 @@ RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h,
   olc::rcode res;
 
   res = app.Construct(screen_w, screen_h, pixel_w, pixel_h, full_screen, vsync);
-  switch (res) {
-    case olc::rcode::FAIL: return RCode::CONSTRUCT_FAIL;
-    case olc::rcode::NO_FILE: return RCode::CONSTRUCT_NO_FILE;
-    case olc::rcode::OK: break;
+  if (res) {
+    res = app.Start();
   }
-
-  res = app.Start();
-  switch (res) {
-    case olc::rcode::FAIL: return RCode::START_FAIL;
-    case olc::rcode::NO_FILE: return RCode::START_NO_FILE;
-    case olc::rcode::OK: break;
-  }
-
-  return RCode::OK;
+  return TO_RCODE(res);
 }
 
 bool IsFocused() { return app.IsFocused(); }
