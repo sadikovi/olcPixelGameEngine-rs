@@ -1,13 +1,24 @@
+use std::env;
 use std::io;
 use std::io::Write;
 use std::process;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 fn main() {
-  // Downloads olcPixelGameEngine.h file.
+  // OUT_DIR is set by Cargo during a build.
+  let out_dir = env::var("OUT_DIR").unwrap();
+  println!("OUT_DIR: {}", out_dir);
+
+  // Root folder where we will build pixel game engine.
+  let root = Path::new(&out_dir);
+
+  // Download olcPixelGameEngine.h file.
   // If you have issues downloading the file, you can add the file in the project root
   // and comment out this step.
   let output = process::Command::new("curl")
-    .arg("-O")
+    .arg("-o")
+    .arg(root.join("olcPixelGameEngine.h"))
     .arg("--fail")
     .arg("https://raw.githubusercontent.com/sadikovi/olcPixelGameEngine-macos/master/olcPixelGameEngine.h")
     .output()
@@ -18,13 +29,17 @@ fn main() {
   io::stderr().write_all(&output.stderr).unwrap();
   assert!(output.status.success());
 
-  // Builds Rust binding together with olcPixelGameEngine.h.
+  // Copy C++ binding files into OUT_DIR to build a library.
+  fs::copy("src/olcRustBindingApp.h", root.join("olcRustBindingApp.h"));
+  fs::copy("src/olcRustBindingApp.cpp", root.join("olcRustBindingApp.cpp"));
+
+  // Build Rust binding together with olcPixelGameEngine.h.
   cc::Build::new()
     .cpp(true)
     .include("/usr/X11/include")
     .flag("-std=c++17")
     .flag("-Wno-delete-non-virtual-dtor") // warnings from the olcPixelGameEngine, need to be fixed upstream
-    .file("src/olcRustBindingApp.cpp")
+    .file(root.join("olcRustBindingApp.cpp"))
     .warnings(false)
     .compile("olcRustBindingApp");
 
