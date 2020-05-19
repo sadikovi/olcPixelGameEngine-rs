@@ -1,9 +1,9 @@
 use std::env;
+use std::fs;
 use std::io;
 use std::io::Write;
+use std::path::Path;
 use std::process;
-use std::fs;
-use std::path::{Path, PathBuf};
 
 fn main() {
   // OUT_DIR is set by Cargo during a build.
@@ -30,8 +30,8 @@ fn main() {
   assert!(output.status.success());
 
   // Copy C++ binding files into OUT_DIR to build a library.
-  fs::copy("src/olcRustBindingApp.h", root.join("olcRustBindingApp.h"));
-  fs::copy("src/olcRustBindingApp.cpp", root.join("olcRustBindingApp.cpp"));
+  fs::copy("src/olcRustBindingApp.h", root.join("olcRustBindingApp.h")).unwrap();
+  fs::copy("src/olcRustBindingApp.cpp", root.join("olcRustBindingApp.cpp")).unwrap();
 
   // Build Rust binding together with olcPixelGameEngine.h.
   cc::Build::new()
