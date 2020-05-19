@@ -39,10 +39,6 @@ fn main() {
     .include("/usr/X11/include")
     .flag("-std=c++17")
     .flag("-Wno-delete-non-virtual-dtor") // warnings from the olcPixelGameEngine, need to be fixed upstream
-    .flag("-lGL")
-    .flag("-lX11")
-    .flag("-lpng")
-    .flag("-lpthread")
     .file(root.join("olcRustBindingApp.cpp"))
     .warnings(false)
     .compile("olcRustBindingApp");

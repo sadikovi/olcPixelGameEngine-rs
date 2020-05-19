@@ -4,14 +4,10 @@ rust:
   - nightly
 os:
   - linux
-  - osx
 addons:
   apt:
     packages:
-      - xauth
-      - xorg
-      - openbox
-      - mesa-utils
+      - freeglut3-dev
 script:
   - cargo build --verbose
   - cargo test --verbose
