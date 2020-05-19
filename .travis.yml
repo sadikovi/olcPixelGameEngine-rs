@@ -6,6 +6,6 @@ os:
   - linux
   - osx
 script:
-  - cargo build
-  - cargo test
+  - cargo build --verbose
+  - cargo test --verbose
   - cargo doc --no-deps
