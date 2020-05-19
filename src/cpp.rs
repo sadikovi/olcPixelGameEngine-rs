@@ -120,6 +120,7 @@ extern "C" {
 
   // Sprite API
 
+  pub fn SpriteNullConstructor() -> Sprite;
   pub fn SpriteConstructor(w: i32, h: i32) -> Sprite;
   pub fn SpriteDestructor(s: &Sprite);
   pub fn SpriteLoadFromFile(s: &Sprite, image_file: *const c_char) -> RCode;

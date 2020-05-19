@@ -57,6 +57,7 @@ RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h,
   return TO_RCODE(res);
 }
 
+Sprite SpriteNullConstructor() { return TO_SPRITE(new olc::Sprite()); }
 Sprite SpriteConstructor(int32_t w, int32_t h) { return TO_SPRITE(new olc::Sprite(w, h)); }
 void SpriteDestructor(Sprite* s) { delete s->olc_sprite; }
 RCode SpriteLoadFromFile(Sprite* s, const char* image_file) { return TO_RCODE(TO_OLC_SPRITE(s)->LoadFromFile(image_file)); }

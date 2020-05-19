@@ -94,6 +94,8 @@ RCode start(const char* name, void* binding, int32_t screen_w, int32_t screen_h,
 
 // olcPixelGameEngine API
 
+// Creates a new empty sprite
+Sprite SpriteNullConstructor();
 // Creates a new sprite with dimensions
 Sprite SpriteConstructor(int32_t w, int32_t h);
 // Calls destructor on the underlying olc sprite

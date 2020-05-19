@@ -111,7 +111,8 @@ pub struct Sprite {
 impl Sprite {
   /// Creates a new empty sprite.
   pub fn new() -> Self {
-    Self::with_dims(0, 0)
+    let inner = unsafe { cpp::SpriteNullConstructor() };
+    Self { inner }
   }
 
   /// Creates an empty sprite with dimensions `width` x `height`.
