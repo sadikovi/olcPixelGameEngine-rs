@@ -2,8 +2,11 @@
 Rust bindings and API for olcPixelGameEngine.
 
 Library offers Rust API for [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine/).
-The code builds on Linux and macOS/OSX (any 10.x, only X11 is required) and uses my mac port of
-pixel game engine https://github.com/sadikovi/olcPixelGameEngine-macos.
+The code builds on macOS/OSX (any 10.x, including older versions, only X11 is required) and uses
+my mac port of pixel game engine https://github.com/sadikovi/olcPixelGameEngine-macos.
+
+> The code should build on Linux as well after you update build.rs file to compile pixel game
+> engine on Linux. I will try addressing it soon but the fixes are more than welcome.
 
 You can link the crate as a dependency and extend `Application` trait to run the pixel game engine:
 ```rust
