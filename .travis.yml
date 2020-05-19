@@ -3,11 +3,7 @@ cache: cargo
 rust:
   - nightly
 os:
-  - linux
-addons:
-  apt:
-    packages:
-      - freeglut3-dev
+  - osx
 script:
   - cargo build --verbose
   - cargo test --verbose
