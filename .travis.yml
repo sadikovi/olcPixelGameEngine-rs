@@ -5,6 +5,10 @@ rust:
 os:
   - linux
   - osx
+addons:
+  apt:
+    packages:
+      - xauth
 script:
   - cargo build --verbose
   - cargo test --verbose
