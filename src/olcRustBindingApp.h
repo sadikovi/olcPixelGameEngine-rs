@@ -42,11 +42,6 @@ typedef struct {
 typedef olc::Sprite::Mode SpriteMode;
 typedef olc::Sprite::Flip SpriteFlip;
 
-typedef struct { int32_t x; int32_t y; } Vi2d;
-typedef struct { uint32_t x; uint32_t y; } Vu2d;
-typedef struct { float x; float y; } Vf2d;
-typedef struct { double x; double y; } Vd2d;
-
 #define TO_RCODE(code) (toRCode(code))
 #define TO_PIXEL(p) (toPixel(p))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
