@@ -9,6 +9,8 @@ addons:
   apt:
     packages:
       - xauth
+      - xorg
+      - openbox
 script:
   - cargo build --verbose
   - cargo test --verbose
