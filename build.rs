@@ -42,7 +42,6 @@ fn build_rust_binding(root: &Path) {
 fn build_rust_binding(root: &Path) {
   cc::Build::new()
     .cpp(true)
-    .flag("-std=c++17")
     .flag("-Wno-delete-non-virtual-dtor") // warnings from the olcPixelGameEngine, need to be fixed upstream
     .file(root.join("olcRustBindingApp.cpp"))
     .warnings(false)
