@@ -35,14 +35,12 @@ fn build_rust_binding(root: &Path) {
   println!("cargo:rustc-link-lib=GL");
   println!("cargo:rustc-link-lib=png");
   println!("cargo:rustc-link-lib=pthread");
-  println!("cargo:rustc-link-lib=olcRustBindingApp");
 }
 
 #[cfg(target_os = "linux")]
 fn build_rust_binding(root: &Path) {
   cc::Build::new()
     .cpp(true)
-    .flag("-Wno-delete-non-virtual-dtor") // warnings from the olcPixelGameEngine, need to be fixed upstream
     .file(root.join("olcRustBindingApp.cpp"))
     .warnings(false)
     .compile("olcRustBindingApp");
@@ -52,7 +50,6 @@ fn build_rust_binding(root: &Path) {
   println!("cargo:rustc-link-lib=png");
   println!("cargo:rustc-link-lib=pthread");
   println!("cargo:rustc-link-lib=stdc++fs");
-  println!("cargo:rustc-link-lib=olcRustBindingApp");
 }
 
 // macos:
