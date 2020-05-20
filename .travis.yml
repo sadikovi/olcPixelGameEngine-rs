@@ -2,22 +2,26 @@ language: rust
 cache: cargo
 rust:
   - nightly
-os:
-  - osx
-  - linux
-addons: # linux only
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - gcc-8
-      - g++-8
-      - libpng-dev
-      - libglu1-mesa
-      - libglu1-mesa-dev
+os: osx
+jobs:
+  include:
+    - os: linux
+      dist: xenial
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-8
+            - g++-8
+            - libpng-dev
+            - libglu1-mesa
+            - libglu1-mesa-dev
+      env:
+        - CC=gcc-8
+        - CXX=g++-8
+    - os: osx
 script:
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export CC=gcc-8; fi
-  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then export CC=g++-8; fi
   - cargo build --verbose
   - cargo test --verbose
   - cargo doc --no-deps
