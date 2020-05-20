@@ -2,6 +2,7 @@
 
 [![Build Status](https://www.travis-ci.org/sadikovi/olcPixelGameEngine-rs.svg?branch=master)](https://www.travis-ci.org/sadikovi/olcPixelGameEngine-rs)
 [![](http://meritbadge.herokuapp.com/olc_pixel_game_engine)](https://crates.io/crates/olc_pixel_game_engine)
+[![](https://docs.rs/olc_pixel_game_engine/badge.svg)](https://docs.rs/olc_pixel_game_engine)
 
 Library offers Rust API for [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine/).
 The code builds on Linux and macOS/OSX (any 10.x, including older versions, only X11 is required)
