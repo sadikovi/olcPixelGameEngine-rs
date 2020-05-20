@@ -4,7 +4,20 @@ rust:
   - nightly
 os:
   - osx
+  - linux
+addons: # linux only
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-8
+      - g++-8
+      - libpng-dev
+      - libglu1-mesa
+      - libglu1-mesa-dev
 script:
+  - export CC=gcc-8 # linux only
+  - export CXX=g++-8 # linux only
   - cargo build --verbose
   - cargo test --verbose
   - cargo doc --no-deps

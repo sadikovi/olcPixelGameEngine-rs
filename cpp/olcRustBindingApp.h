@@ -51,9 +51,11 @@ typedef olc::Sprite::Flip SpriteFlip;
 
 static inline RCode toRCode(olc::rcode code) {
   switch (code) {
-    case olc::rcode::FAIL: return RCode::FAIL;
-    case olc::rcode::NO_FILE: return RCode::NO_FILE;
     case olc::rcode::OK: return RCode::OK;
+    case olc::rcode::NO_FILE: return RCode::NO_FILE;
+    case olc::rcode::FAIL:
+    default:
+      return RCode::FAIL;
   }
 }
 
