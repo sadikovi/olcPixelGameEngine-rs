@@ -109,6 +109,14 @@ pub enum SpriteFlip {
   VERT
 }
 
+// Internal Decal datastructure.
+// Does not support Clone and Copy due to Drop freeing the underlying olc decal.
+#[repr(C)]
+#[derive(Debug, PartialEq)]
+pub struct Decal {
+  olc_decal: *const c_void
+}
+
 #[link(name="olcRustBindingApp", kind="static")]
 extern "C" {
   /// Utility c++ rand function.
@@ -133,6 +141,12 @@ extern "C" {
   pub fn SpriteSetPixel(s: &Sprite, x: i32, y: i32, p: Pixel) -> bool;
   pub fn SpriteSample(s: &Sprite, x: c_float, y: c_float) -> Pixel;
   pub fn SpriteSampleBL(s: &Sprite, u: c_float, v: c_float) -> Pixel;
+
+  pub fn DecalConstructor(s: &Sprite) -> Decal;
+  pub fn DecalId(d: &Decal) -> i32;
+  pub fn DecalUScale(d: &Decal) -> c_float;
+  pub fn DecalVScale(d: &Decal) -> c_float;
+  pub fn DecalDestructor(d: &Decal);
 
   // olcPixelGameEngine API
 

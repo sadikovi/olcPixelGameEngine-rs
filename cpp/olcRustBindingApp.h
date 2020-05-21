@@ -42,12 +42,18 @@ typedef struct {
 typedef olc::Sprite::Mode SpriteMode;
 typedef olc::Sprite::Flip SpriteFlip;
 
+typedef struct {
+  olc::Decal* olc_decal;
+} Decal;
+
 #define TO_RCODE(code) (toRCode(code))
 #define TO_PIXEL(p) (toPixel(p))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
 #define TO_HWBUTTON(b) (toHWButton(b))
 #define TO_SPRITE(s) (toSprite(s))
 #define TO_OLC_SPRITE(s) (s->olc_sprite)
+#define TO_DECAL(d) (toDecal(d))
+#define TO_OLC_DECAL(d) (d->olc_decal)
 
 static inline RCode toRCode(olc::rcode code) {
   switch (code) {
@@ -80,6 +86,12 @@ static inline Sprite toSprite(olc::Sprite* ptr) {
   Sprite s;
   s.olc_sprite = ptr;
   return s;
+}
+
+static inline Decal toDecal(olc::Decal* ptr) {
+  Decal d;
+  d.olc_decal = ptr;
+  return d;
 }
 
 // Useful utility functions
@@ -117,6 +129,17 @@ bool  SpriteSetPixel(Sprite* s, int32_t x, int32_t y, Pixel p);
 Pixel SpriteSample(Sprite* s, float x, float y);
 // Sprite sample BL for (u, v)
 Pixel SpriteSampleBL(Sprite* s, float u, float v);
+
+// Decal constructor
+Decal DecalConstructor(Sprite* s);
+// Returns decal id
+int32_t DecalId(Decal* d);
+// Returns U scale component of the decal
+float DecalUScale(Decal* d);
+// Returns V scale component of the decal
+float DecalVScale(Decal* d);
+// Decal destructor
+void DecalDestructor(Decal* d);
 
 // Returns true if window is currently in focus
 bool IsFocused();

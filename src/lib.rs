@@ -102,7 +102,7 @@ extern "C" fn onUserDestroy(binding: *mut cpp::c_void) -> bool {
 //----------------------------------
 
 /// Mirror of `olc::Sprite`.
-/// Represents a sprite in the pixel game engine.
+/// An image represented by a 2D array of `olc::Pixel`.
 #[derive(Debug)]
 pub struct Sprite {
   inner: cpp::Sprite
@@ -196,6 +196,53 @@ impl Drop for Sprite {
   fn drop(&mut self) {
     unsafe {
       cpp::SpriteDestructor(&self.inner);
+    }
+  }
+}
+
+/// Mirror of `olc::Decal`.
+/// A GPU resident storage of an `olc::Sprite`.
+#[derive(Debug)]
+pub struct Decal {
+  inner: cpp::Decal,
+  sprite: Sprite
+}
+
+impl Decal {
+  /// Creates a new decal from a sprite.
+  pub fn new(sprite: Sprite) -> Self {
+    let inner = unsafe { cpp::DecalConstructor(&sprite.inner) };
+    Self { inner, sprite }
+  }
+
+  /// Returns id of the decal.
+  pub fn id(&self) -> i32 {
+    unsafe { cpp::DecalId(&self.inner) }
+  }
+
+  /// Returns scale of the decal.
+  pub fn scale(&self) -> (f32, f32) {
+    let u = unsafe { cpp::DecalUScale(&self.inner) };
+    let v = unsafe { cpp::DecalVScale(&self.inner) };
+    (u, v)
+  }
+
+  /// Returns sprite reference.
+  pub fn sprite(&self) -> &Sprite {
+    &self.sprite
+  }
+}
+
+impl fmt::Display for Decal {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "decal id {}, scale {:?}, {}", self.id(), self.scale(), self.sprite())
+  }
+}
+
+impl Drop for Decal {
+  fn drop(&mut self) {
+    unsafe {
+      cpp::DecalDestructor(&self.inner);
     }
   }
 }

@@ -71,6 +71,12 @@ bool  SpriteSetPixel(Sprite* s, int32_t x, int32_t y, Pixel p) { return TO_OLC_S
 Pixel SpriteSample(Sprite* s, float x, float y) { return TO_PIXEL(TO_OLC_SPRITE(s)->Sample(x, y)); }
 Pixel SpriteSampleBL(Sprite* s, float u, float v) { return TO_PIXEL(TO_OLC_SPRITE(s)->SampleBL(u, v)); }
 
+Decal DecalConstructor(Sprite* s) { return TO_DECAL(new olc::Decal(TO_OLC_SPRITE(s))); }
+int32_t DecalId(Decal* d) { return TO_OLC_DECAL(d)->id; }
+float DecalUScale(Decal* d) { return TO_OLC_DECAL(d)->vUVScale.x; }
+float DecalVScale(Decal* d) { return TO_OLC_DECAL(d)->vUVScale.y; }
+void DecalDestructor(Decal* d) { delete d->olc_decal; }
+
 bool IsFocused() { return app.IsFocused(); }
 HWButton GetKey(Key k) { return TO_HWBUTTON(app.GetKey(k)); }
 HWButton GetMouse(uint32_t b) { return TO_HWBUTTON(app.GetMouse(b)); }
