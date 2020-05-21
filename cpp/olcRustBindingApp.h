@@ -218,6 +218,7 @@ void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p);
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
 // Flat fills a triangle between points (x1,y1), (x2,y2) and (x3,y3)
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
+
 // Draws an entire sprite at well in my defencelocation (x,y)
 void DrawSprite(int32_t x, int32_t y, Sprite* sprite, uint32_t scale, SpriteFlip flip);
 // Draws an area of a sprite at location (x,y), where the

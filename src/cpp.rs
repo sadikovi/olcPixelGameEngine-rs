@@ -202,11 +202,13 @@ extern "C" {
   pub fn DrawTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
   // Flat fills a triangle between points (x1, y1), (x2, y2) and (x3, y3)
   pub fn FillTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
+
   // Draws an entire sprite at well in my defencelocation (x,y)
   pub fn DrawSprite(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip);
   // Draws an area of a sprite at location (x,y), where the
   // selected area is (ox,oy) to (ox+w,oy+h)
   pub fn DrawPartialSprite(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip);
+
   // Draws a whole decal, with optional scale and tinting
   pub fn DrawDecal(pos: &Vf2d, decal: &Decal, scale: &Vf2d, tint: &Pixel);
   // Draws a region of a decal, with optional scale and tinting
@@ -224,6 +226,7 @@ extern "C" {
 
   pub fn DrawStringDecal(pos: &Vf2d, sText: *const c_char, col: Pixel, scale: &Vf2d);
   pub fn DrawString(x: i32, y: i32, sText: *const c_char, col: Pixel, scale: u32);
+
   // Clears entire draw target to Pixel
   pub fn Clear(p: Pixel);
   // Clears the rendering back buffer
