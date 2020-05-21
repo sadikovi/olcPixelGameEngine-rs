@@ -32,26 +32,22 @@ pub enum PixelMode {
   CUSTOM
 }
 
+/// Mirror of `olc::vf2d`. A 2D float vector type.
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Vf2d {
+  pub x: c_float,
+  pub y: c_float
+}
+
+/// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-/// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
 pub struct Pixel {
   pub r: u8,
   pub g: u8,
   pub b: u8,
   pub a: u8
-}
-
-impl Pixel {
-  /// Creates a new pixel with RGBA value.
-  pub const fn rgba(r: u8, g: u8, b: u8, a: u8) -> Pixel {
-    Pixel { r, g, b, a }
-  }
-
-  /// Creates a new pixel with RGB value.
-  pub const fn rgb(r: u8, g: u8, b: u8) -> Pixel {
-    Pixel { r, g, b, a: 0xFF }
-  }
 }
 
 /// Mirror of `olc::HWButton`. Represents the button state, either keyboard or mouse.
@@ -144,8 +140,7 @@ extern "C" {
 
   pub fn DecalConstructor(s: &Sprite) -> Decal;
   pub fn DecalId(d: &Decal) -> i32;
-  pub fn DecalUScale(d: &Decal) -> c_float;
-  pub fn DecalVScale(d: &Decal) -> c_float;
+  pub fn DecalScale(d: &Decal) -> Vf2d;
   pub fn DecalDestructor(d: &Decal);
 
   // olcPixelGameEngine API

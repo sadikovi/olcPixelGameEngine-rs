@@ -73,8 +73,7 @@ Pixel SpriteSampleBL(Sprite* s, float u, float v) { return TO_PIXEL(TO_OLC_SPRIT
 
 Decal DecalConstructor(Sprite* s) { return TO_DECAL(new olc::Decal(TO_OLC_SPRITE(s))); }
 int32_t DecalId(Decal* d) { return TO_OLC_DECAL(d)->id; }
-float DecalUScale(Decal* d) { return TO_OLC_DECAL(d)->vUVScale.x; }
-float DecalVScale(Decal* d) { return TO_OLC_DECAL(d)->vUVScale.y; }
+Vf2d DecalScale(Decal* d) { return TO_VF2D(TO_OLC_DECAL(d)->vUVScale); }
 void DecalDestructor(Decal* d) { delete d->olc_decal; }
 
 bool IsFocused() { return app.IsFocused(); }

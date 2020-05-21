@@ -40,6 +40,7 @@ mod cpp;
 
 // Public export of cpp module structs and enums so they can be used as an API.
 pub use cpp::PixelMode;
+pub use cpp::Vf2d;
 pub use cpp::Pixel;
 pub use cpp::HWButton;
 pub use cpp::Key;
@@ -100,6 +101,25 @@ extern "C" fn onUserDestroy(binding: *mut cpp::c_void) -> bool {
 //----------------------------------
 // Public API
 //----------------------------------
+
+impl Vf2d {
+  /// Creates new Vf2d struct.
+  pub fn new(x: f32, y: f32) -> Self {
+    Self { x, y }
+  }
+}
+
+impl Pixel {
+  /// Creates a new pixel with RGBA value.
+  pub const fn rgba(r: u8, g: u8, b: u8, a: u8) -> Self {
+    Self { r, g, b, a }
+  }
+
+  /// Creates a new pixel with RGB value.
+  pub const fn rgb(r: u8, g: u8, b: u8) -> Self {
+    Self { r, g, b, a: 0xFF }
+  }
+}
 
 /// Mirror of `olc::Sprite`.
 /// An image represented by a 2D array of `olc::Pixel`.
@@ -221,10 +241,8 @@ impl Decal {
   }
 
   /// Returns scale of the decal.
-  pub fn scale(&self) -> (f32, f32) {
-    let u = unsafe { cpp::DecalUScale(&self.inner) };
-    let v = unsafe { cpp::DecalVScale(&self.inner) };
-    (u, v)
+  pub fn scale(&self) -> Vf2d {
+    unsafe { cpp::DecalScale(&self.inner) }
   }
 
   /// Returns sprite reference.

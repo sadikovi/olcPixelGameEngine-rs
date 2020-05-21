@@ -15,6 +15,12 @@ typedef enum {
   OK
 } RCode;
 
+// C variant of `olc::vf2d` struct.
+typedef struct {
+  float x;
+  float y;
+} Vf2d;
+
 typedef struct {
   uint8_t r;
   uint8_t g;
@@ -47,6 +53,7 @@ typedef struct {
 } Decal;
 
 #define TO_RCODE(code) (toRCode(code))
+#define TO_VF2D(v) (toVf2d(v))
 #define TO_PIXEL(p) (toPixel(p))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
 #define TO_HWBUTTON(b) (toHWButton(b))
@@ -63,6 +70,13 @@ static inline RCode toRCode(olc::rcode code) {
     default:
       return RCode::FAIL;
   }
+}
+
+static inline Vf2d toVf2d(olc::vf2d v) {
+  Vf2d st;
+  st.x = v.x;
+  st.y = v.y;
+  return st;
 }
 
 static inline Pixel toPixel(olc::Pixel p) {
@@ -134,10 +148,8 @@ Pixel SpriteSampleBL(Sprite* s, float u, float v);
 Decal DecalConstructor(Sprite* s);
 // Returns decal id
 int32_t DecalId(Decal* d);
-// Returns U scale component of the decal
-float DecalUScale(Decal* d);
-// Returns V scale component of the decal
-float DecalVScale(Decal* d);
+// Returns (u, v) scale of the decal
+Vf2d DecalScale(Decal* d);
 // Decal destructor
 void DecalDestructor(Decal* d);
 
