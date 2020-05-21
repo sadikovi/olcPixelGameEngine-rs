@@ -207,7 +207,22 @@ extern "C" {
   // Draws an area of a sprite at location (x,y), where the
   // selected area is (ox,oy) to (ox+w,oy+h)
   pub fn DrawPartialSprite(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip);
+  // Draws a whole decal, with optional scale and tinting
+  pub fn DrawDecal(pos: &Vf2d, decal: &Decal, scale: &Vf2d, tint: &Pixel);
+  // Draws a region of a decal, with optional scale and tinting
+  pub fn DrawPartialDecal(pos: &Vf2d, decal: &Decal, source_pos: &Vf2d, source_size: &Vf2d, scale: &Vf2d, tint: &Pixel);
 
+  // Draws warped decal
+  pub fn DrawWarpedDecal(decal: &Decal, pos: *const Vf2d, tint: &Pixel);
+  // Draws partial warped decal
+  pub fn DrawPartialWarpedDecal(decal: &Decal, pos: *const Vf2d, source_pos: &Vf2d, source_size: Vf2d, tint: &Pixel);
+
+  // Draws rotated decal
+  pub fn DrawRotatedDecal(pos: &Vf2d, decal: &Decal, angle: c_float, center: &Vf2d, scale: &Vf2d, tint: &Pixel);
+  // Draws partially rotated decal
+  pub fn DrawPartialRotatedDecal(pos: &Vf2d, decal: &Decal, angle: c_float, center: &Vf2d, source_pos: &Vf2d, source_size: &Vf2d, scale: &Vf2d, tint: &Pixel);
+
+  pub fn DrawStringDecal(pos: &Vf2d, sText: *const c_char, col: Pixel, scale: &Vf2d);
   pub fn DrawString(x: i32, y: i32, sText: *const c_char, col: Pixel, scale: u32);
   // Clears entire draw target to Pixel
   pub fn Clear(p: Pixel);

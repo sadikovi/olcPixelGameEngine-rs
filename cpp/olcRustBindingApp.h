@@ -54,6 +54,7 @@ typedef struct {
 
 #define TO_RCODE(code) (toRCode(code))
 #define TO_VF2D(v) (toVf2d(v))
+#define TO_OLC_VF2D(v) (olc::vf2d(v.x, v.y))
 #define TO_PIXEL(p) (toPixel(p))
 #define TO_OLC_PIXEL(p) (olc::Pixel(p.r, p.g, p.b, p.a))
 #define TO_HWBUTTON(b) (toHWButton(b))
@@ -218,28 +219,27 @@ void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, in
 // Flat fills a triangle between points (x1,y1), (x2,y2) and (x3,y3)
 void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
 // Draws an entire sprite at well in my defencelocation (x,y)
-void DrawSprite(int32_t x, int32_t y, Sprite *sprite, uint32_t scale, SpriteFlip flip);
+void DrawSprite(int32_t x, int32_t y, Sprite* sprite, uint32_t scale, SpriteFlip flip);
 // Draws an area of a sprite at location (x,y), where the
 // selected area is (ox,oy) to (ox+w,oy+h)
-void DrawPartialSprite(int32_t x, int32_t y, Sprite *sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale, SpriteFlip flip);
-// // Draws a whole decal, with optional scale and tinting
-// void DrawDecal(const olc::vf2d& pos, olc::Decal *decal, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
-// // Draws a region of a decal, with optional scale and tinting
-// void DrawPartialDecal(const olc::vf2d& pos, olc::Decal* decal, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
-//
-// void DrawWarpedDecal(olc::Decal* decal, const olc::vf2d(&pos)[4], const olc::Pixel& tint = olc::WHITE);
-// void DrawWarpedDecal(olc::Decal* decal, const olc::vf2d* pos, const olc::Pixel& tint = olc::WHITE);
-// void DrawWarpedDecal(olc::Decal* decal, const std::array<olc::vf2d, 4>& pos, const olc::Pixel& tint = olc::WHITE);
-//
-// void DrawRotatedDecal(const olc::vf2d& pos, olc::Decal* decal, const float fAngle, const olc::vf2d& center = { 0.0f, 0.0f }, const olc::vf2d& scale = { 1.0f,1.0f }, const olc::Pixel& tint = olc::WHITE);
-//
-// void DrawStringDecal(const olc::vf2d& pos, const std::string& sText, const Pixel col = olc::WHITE, const olc::vf2d& scale = { 1.0f, 1.0f });
-// void DrawPartialRotatedDecal(const olc::vf2d& pos, olc::Decal* decal, const float fAngle, const olc::vf2d& center, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::vf2d& scale = { 1.0f, 1.0f }, const olc::Pixel& tint = olc::WHITE);
-//
-// void DrawPartialWarpedDecal(olc::Decal* decal, const olc::vf2d(&pos)[4], const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::Pixel& tint = olc::WHITE);
-// void DrawPartialWarpedDecal(olc::Decal* decal, const olc::vf2d* pos, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::Pixel& tint = olc::WHITE);
-// void DrawPartialWarpedDecal(olc::Decal* decal, const std::array<olc::vf2d, 4>& pos, const olc::vf2d& source_pos, const olc::vf2d& source_size, const olc::Pixel& tint = olc::WHITE);
-//
+void DrawPartialSprite(int32_t x, int32_t y, Sprite* sprite, int32_t ox, int32_t oy, int32_t w, int32_t h, uint32_t scale, SpriteFlip flip);
+
+// Draws a whole decal, with optional scale and tinting
+void DrawDecal(const Vf2d& pos, Decal* decal, const Vf2d& scale, const Pixel& tint);
+// Draws a region of a decal, with optional scale and tinting
+void DrawPartialDecal(const Vf2d& pos, Decal* decal, const Vf2d& source_pos, const Vf2d& source_size, const Vf2d& scale, const Pixel& tint);
+
+// Draws warped decal
+void DrawWarpedDecal(Decal* decal, const Vf2d* pos, const Pixel& tint);
+// Draw partial warped decal
+void DrawPartialWarpedDecal(Decal* decal, const Vf2d* pos, const Vf2d& source_pos, const Vf2d& source_size, const Pixel& tint);
+
+// Draws rotated decal
+void DrawRotatedDecal(const Vf2d& pos, Decal* decal, const float angle, const Vf2d& center, const Vf2d& scale, const Pixel& tint);
+// Draws partial rotated decal
+void DrawPartialRotatedDecal(const Vf2d& pos, Decal* decal, const float angle, const Vf2d& center, const Vf2d& source_pos, const Vf2d& source_size, const Vf2d& scale, const Pixel& tint);
+
+void DrawStringDecal(const Vf2d& pos, const char* sText, const Pixel col, const Vf2d& scale);
 void DrawString(int32_t x, int32_t y, const char* sText, Pixel col, uint32_t scale);
 // Clears entire draw target to Pixel
 void Clear(Pixel p);

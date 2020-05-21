@@ -561,26 +561,107 @@ pub fn fill_triangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pi
 /// Draws an entire sprite at the location (x, y).
 #[inline]
 pub fn draw_sprite(x: i32, y: i32, sprite: &Sprite) {
-  draw_sprite_with_scale_and_flip(x, y, sprite, 1, SpriteFlip::NONE)
+  draw_sprite_ext(x, y, sprite, 1, SpriteFlip::NONE)
 }
 
 /// Draws an entire sprite at the location (x, y) with provided scale and flip.
-pub fn draw_sprite_with_scale_and_flip(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip) {
+pub fn draw_sprite_ext(x: i32, y: i32, sprite: &Sprite, scale: u32, flip: SpriteFlip) {
   unsafe { cpp::DrawSprite(x, y, &sprite.inner, scale, flip) }
 }
 
 /// Draws an area of a sprite at location (x, y), where the selected area is (ox, oy) to (ox+w, oy+h).
 #[inline]
 pub fn draw_partial_sprite(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32) {
-  draw_partial_sprite_with_scale_and_flip(x, y, sprite, ox, oy, w, h, 1, SpriteFlip::NONE)
+  draw_partial_sprite_ext(x, y, sprite, ox, oy, w, h, 1, SpriteFlip::NONE)
 }
 
 /// Draws an area of a sprite at location (x, y), where the selected area is (ox, oy) to (ox+w, oy+h)
 /// with provided scale and flip.
-pub fn draw_partial_sprite_with_scale_and_flip(
-  x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip
-) {
+pub fn draw_partial_sprite_ext(x: i32, y: i32, sprite: &Sprite, ox: i32, oy: i32, w: i32, h: i32, scale: u32, flip: SpriteFlip) {
   unsafe { cpp::DrawPartialSprite(x, y, &sprite.inner, ox, oy, w, h, scale, flip) }
+}
+
+/// Draws a whole decal with default scale and tinting.
+#[inline]
+pub fn draw_decal(pos: &Vf2d, decal: &Decal) {
+  draw_decal_ext(pos, decal, &Vf2d::new(1.0, 1.0), &WHITE)
+}
+
+/// Draws a whole decal with scale and tinting.
+pub fn draw_decal_ext(pos: &Vf2d, decal: &Decal, scale: &Vf2d, tint: &Pixel) {
+  unsafe { cpp::DrawDecal(pos, &decal.inner, scale, tint) }
+}
+
+/// Draws a region of a decal with default scale and tint.
+#[inline]
+pub fn draw_partial_decal(pos: &Vf2d, decal: &Decal, source_pos: &Vf2d, source_size: &Vf2d) {
+  draw_partial_decal_ext(pos, decal, source_pos, source_size, &Vf2d::new(1.0, 1.0), &WHITE)
+}
+
+/// Draws a region of a decal with scale and tinting.
+pub fn draw_partial_decal_ext(pos: &Vf2d, decal: &Decal, source_pos: &Vf2d, source_size: &Vf2d, scale: &Vf2d, tint: &Pixel) {
+  unsafe { cpp::DrawPartialDecal(pos, &decal.inner, source_pos, source_size, scale, tint) }
+}
+
+/// Draws warped decal with default tinting. `pos` is an array of 4 positions.
+#[inline]
+pub fn draw_warped_decal(decal: &Decal, pos: &[Vf2d]) {
+  draw_warped_decal_ext(decal, pos, &WHITE)
+}
+
+/// Draws warped decal. `pos` is an array of 4 positions.
+pub fn draw_warped_decal_ext(decal: &Decal, pos: &[Vf2d], tint: &Pixel) {
+  assert_eq!(pos.len(), 4, "Expected 4 positions, received {}", pos.len());
+  let pos_ptr = pos.as_ptr();
+  unsafe { cpp::DrawWarpedDecal(&decal.inner, pos_ptr, tint) }
+}
+
+/// Draws partial warped decal with default tinting. `pos` is an array of 4 positions.
+#[inline]
+pub fn draw_partial_warped_decal(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: Vf2d) {
+  draw_partial_warped_decal_ext(decal, pos, source_pos, source_size, &WHITE)
+}
+
+/// Draws partial warped decal. `pos` is an array of 4 positions.
+pub fn draw_partial_warped_decal_ext(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: Vf2d, tint: &Pixel) {
+  assert_eq!(pos.len(), 4, "Expected 4 positions, received {}", pos.len());
+  let pos_ptr = pos.as_ptr();
+  unsafe { cpp::DrawPartialWarpedDecal(&decal.inner, pos_ptr, source_pos, source_size, tint) }
+}
+
+/// Draws rotated decal with default center, scale, and tinting.
+#[inline]
+pub fn draw_rotated_decal(pos: &Vf2d, decal: &Decal, angle: f32) {
+  draw_rotated_decal_ext(pos, decal, angle, &Vf2d::new(0.0, 0.0), &Vf2d::new(1.0, 1.0), &WHITE);
+}
+
+/// Draws rotated decal with custom center, scale, and tinting.
+pub fn draw_rotated_decal_ext(pos: &Vf2d, decal: &Decal, angle: f32, center: &Vf2d, scale: &Vf2d, tint: &Pixel) {
+  unsafe { cpp::DrawRotatedDecal(pos, &decal.inner, angle, center, scale, tint) }
+}
+
+/// Draws partial rotated decal with default scale and tinting.
+#[inline]
+pub fn draw_partial_rotated_decal(pos: &Vf2d, decal: &Decal, angle: f32, center: &Vf2d, source_pos: &Vf2d, source_size: &Vf2d) {
+  draw_partial_rotated_decal_ext(pos, decal, angle, center, source_pos, source_size, &Vf2d::new(1.0, 1.0), &WHITE);
+}
+
+/// Draws partial rotated decal.
+pub fn draw_partial_rotated_decal_ext(pos: &Vf2d, decal: &Decal, angle: f32, center: &Vf2d, source_pos: &Vf2d, source_size: &Vf2d, scale: &Vf2d, tint: &Pixel) {
+  unsafe { cpp::DrawPartialRotatedDecal(pos, &decal.inner, angle, center, source_pos, source_size, scale, tint) }
+}
+
+/// Draws string decal with default colour and scale.
+#[inline]
+pub fn draw_string_decal(pos: &Vf2d, text: &str) -> Result<(), Error> {
+  draw_string_decal_ext(pos, text, WHITE, &Vf2d::new(1.0, 1.0))
+}
+
+/// Draws string decal with colour and scale.
+pub fn draw_string_decal_ext(pos: &Vf2d, text: &str, col: Pixel, scale: &Vf2d) -> Result<(), Error> {
+  let ctext = CString::new(text)?;
+  unsafe { cpp::DrawStringDecal(pos, ctext.as_ptr(), col, scale) }
+  Ok(())
 }
 
 /// Draws string.
