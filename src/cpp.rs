@@ -217,7 +217,7 @@ extern "C" {
   // Draws warped decal
   pub fn DrawWarpedDecal(decal: &Decal, pos: *const Vf2d, tint: &Pixel);
   // Draws partial warped decal
-  pub fn DrawPartialWarpedDecal(decal: &Decal, pos: *const Vf2d, source_pos: &Vf2d, source_size: Vf2d, tint: &Pixel);
+  pub fn DrawPartialWarpedDecal(decal: &Decal, pos: *const Vf2d, source_pos: &Vf2d, source_size: &Vf2d, tint: &Pixel);
 
   // Draws rotated decal
   pub fn DrawRotatedDecal(pos: &Vf2d, decal: &Decal, angle: c_float, center: &Vf2d, scale: &Vf2d, tint: &Pixel);

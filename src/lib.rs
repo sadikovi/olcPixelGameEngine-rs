@@ -618,12 +618,12 @@ pub fn draw_warped_decal_ext(decal: &Decal, pos: &[Vf2d], tint: &Pixel) {
 
 /// Draws partial warped decal with default tinting. `pos` is an array of 4 positions.
 #[inline]
-pub fn draw_partial_warped_decal(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: Vf2d) {
+pub fn draw_partial_warped_decal(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: &Vf2d) {
   draw_partial_warped_decal_ext(decal, pos, source_pos, source_size, &WHITE)
 }
 
 /// Draws partial warped decal. `pos` is an array of 4 positions.
-pub fn draw_partial_warped_decal_ext(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: Vf2d, tint: &Pixel) {
+pub fn draw_partial_warped_decal_ext(decal: &Decal, pos: &[Vf2d], source_pos: &Vf2d, source_size: &Vf2d, tint: &Pixel) {
   assert_eq!(pos.len(), 4, "Expected 4 positions, received {}", pos.len());
   let pos_ptr = pos.as_ptr();
   unsafe { cpp::DrawPartialWarpedDecal(&decal.inner, pos_ptr, source_pos, source_size, tint) }
