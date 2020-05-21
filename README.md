@@ -5,6 +5,9 @@
 [![](https://docs.rs/olc_pixel_game_engine/badge.svg)](https://docs.rs/olc_pixel_game_engine)
 
 Library offers Rust API for [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine/).
+I try keeping the methods and constants similar to the original C++ code so the API feels familiar
+and it is easy to follow along the tutorial videos.
+
 The code builds on Linux and macOS/OSX (any 10.x, including older versions, only X11 is required)
 and uses my mac port of pixel game engine https://github.com/sadikovi/olcPixelGameEngine-macos.
 
