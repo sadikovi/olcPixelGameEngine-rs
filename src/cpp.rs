@@ -32,8 +32,12 @@ pub enum PixelMode {
   CUSTOM
 }
 
-/// Generic 2D vector type.
-/// I recommend using the type aliases like `Vf2d` and `Vi2d` instead of this struct.
+/// Generic 2D vector type. See [`Vf2d`](Vf2d) and [`Vi2d`](Vi2d) for more information.
+///
+/// Don't use this generic struct directly.
+/// Prefer using [`Vf2d`](Vf2d) (alias for `V2d<f32>`) and [`Vi2d`](Vi2d) (alias for `V2d<i32>`)
+/// instead.
+/// This struct is only exported to show available functions and implemented traits.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct V2d<T> {

@@ -1,38 +1,48 @@
 //! olcPixelGameEngine Rust API.
 //!
-//! Example:
+//! See documentation on the invidual structs, enums, and functions for more information.
+//! All of the root API functions and drawing routines are normally called as
+//! `olc::<function>(...)` similar to C++ code.
+//!
+//! Here is an example that shows how to implement [`Application`](Application) trait and call
+//! olcPixelGameEngine drawing functions.
+//!
 //! ```no_run
 //! extern crate olc_pixel_game_engine;
 //!
 //! use crate::olc_pixel_game_engine as olc;
 //!
+//! // Very simple example application that prints "Hello, World!" on screen.
+//!
 //! struct ExampleProgram {}
 //!
 //! impl olc::Application for ExampleProgram {
 //!   fn on_user_create(&mut self) -> Result<(), olc::Error> {
-//!     // Mirrors `olcPixelGameEngine::onUserCreate`.
-//!     // Your code goes here.
+//!     // Mirrors `olcPixelGameEngine::onUserCreate`. Your code goes here.
 //!     Ok(())
 //!   }
 //!
 //!   fn on_user_update(&mut self, _elapsed_time: f32) -> Result<(), olc::Error> {
-//!     // Mirrors `olcPixelGameEngine::onUserUpdate`.
-//!     // Your code goes here.
+//!     // Mirrors `olcPixelGameEngine::onUserUpdate`. Your code goes here.
+//!
+//!     // Clears screen and sets black colour.
+//!     olc::clear(olc::BLACK);
+//!     // Prints the string starting at the position (40, 40) and using white colour.
+//!     olc::draw_string(40, 40, "Hello, World!", olc::WHITE)?;
 //!     Ok(())
 //!   }
 //!
 //!   fn on_user_destroy(&mut self) -> Result<(), olc::Error> {
-//!     // Mirrors `olcPixelGameEngine::onUserDestroy`.
-//!     // Your code goes here.
+//!     // Mirrors `olcPixelGameEngine::onUserDestroy`. Your code goes here.
 //!     Ok(())
 //!   }
 //! }
 //!
 //! fn main() {
 //!   let mut example = ExampleProgram {};
-//!   // Launches the program in 256x240 "pixels" screen, where each "pixel" is 4x4 pixel square,
+//!   // Launches the program in 200x100 "pixels" screen, where each "pixel" is 4x4 pixel square,
 //!   // and starts the main game loop.
-//!   olc::start("Hello, World!", &mut example, 256, 240, 4, 4).unwrap();
+//!   olc::start("Hello, World!", &mut example, 200, 100, 4, 4).unwrap();
 //! }
 //! ```
 
@@ -40,6 +50,7 @@ mod cpp;
 
 // Public export of cpp module structs and enums so they can be used as an API.
 pub use cpp::PixelMode;
+pub use cpp::V2d;
 pub use cpp::Vi2d;
 pub use cpp::Vf2d;
 pub use cpp::Pixel;
@@ -109,6 +120,58 @@ impl<T> cpp::V2d<T> {
   pub fn new(x: T, y: T) -> Self {
     Self { x, y }
   }
+}
+
+impl Vi2d {
+  /// Returns magnitude (or length) of a vector.
+  #[inline]
+  pub fn mag(&self) -> i32 { (self.mag2() as f32).sqrt() as i32 }
+
+  /// Returns magnitude squared.
+  #[inline]
+  pub fn mag2(&self) -> i32 { self.x * self.x + self.y * self.y }
+
+  /// Returns vector norm.
+  #[inline]
+  pub fn norm(&self) -> Self { let r = 1 / self.mag(); Self { x: self.x * r, y: self.y * r } }
+
+  /// Returns perpendicular vector.
+  #[inline]
+  pub fn perp(&self) -> Self { Self { x: -self.y, y: self.x } }
+
+  /// Returns dot product of two vectors.
+  #[inline]
+  pub fn dot(&self, rhs: Vi2d) -> i32 { self.x * rhs.x + self.y * rhs.y }
+
+  /// Returns cross product of two vectors.
+  #[inline]
+  pub fn cross(&self, rhs: Vi2d) -> i32 { self.x * rhs.y - self.y * rhs.x }
+}
+
+impl Vf2d {
+  /// Returns magnitude (or length) of a vector.
+  #[inline]
+  pub fn mag(&self) -> f32 { self.mag2().sqrt() }
+
+  /// Returns magnitude squared.
+  #[inline]
+  pub fn mag2(&self) -> f32 { self.x * self.x + self.y * self.y }
+
+  /// Returns vector norm.
+  #[inline]
+  pub fn norm(&self) -> Self { let r = 1.0 / self.mag(); Self { x: self.x * r, y: self.y * r } }
+
+  /// Returns perpendicular vector.
+  #[inline]
+  pub fn perp(&self) -> Self { Self { x: -self.y, y: self.x } }
+
+  /// Returns dot product of two vectors.
+  #[inline]
+  pub fn dot(&self, rhs: Vf2d) -> f32 { self.x * rhs.x + self.y * rhs.y }
+
+  /// Returns cross product of two vectors.
+  #[inline]
+  pub fn cross(&self, rhs: Vf2d) -> f32 { self.x * rhs.y - self.y * rhs.x }
 }
 
 impl<T> From<(T, T)> for cpp::V2d<T> {
@@ -363,7 +426,8 @@ impl From<std::ffi::NulError> for Error {
   }
 }
 
-/// Application trait, should be extended by an implementation and passed to start function.
+/// Application trait, should be extended by an implementation and passed to [`start`](start)
+/// function.
 pub trait Application {
   /// Called on user create action.
   fn on_user_create(&mut self) -> Result<(), Error>;
