@@ -32,13 +32,19 @@ pub enum PixelMode {
   CUSTOM
 }
 
-/// Mirror of `olc::vf2d`. A 2D float vector type.
+/// Generic 2D vector type.
+/// I recommend using the type aliases like `Vf2d` and `Vi2d` instead of this struct.
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Vf2d {
-  pub x: c_float,
-  pub y: c_float
+pub struct V2d<T> {
+  pub x: T,
+  pub y: T
 }
+
+/// Mirror of `olc::vf2d`. A 2D integer vector type.
+pub type Vi2d = V2d<i32>;
+/// Mirror of `olc::vf2d`. A 2D float vector type.
+pub type Vf2d = V2d<c_float>;
 
 /// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
 #[repr(C)]

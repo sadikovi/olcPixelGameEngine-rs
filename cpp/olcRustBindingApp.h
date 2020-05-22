@@ -15,6 +15,12 @@ typedef enum {
   OK
 } RCode;
 
+// C variant of `olc::vi2d` struct.
+typedef struct {
+  int32_t x;
+  int32_t y;
+} Vi2d;
+
 // C variant of `olc::vf2d` struct.
 typedef struct {
   float x;
@@ -53,6 +59,8 @@ typedef struct {
 } Decal;
 
 #define TO_RCODE(code) (toRCode(code))
+#define TO_VI2D(v) (toVi2d(v))
+#define TO_OLC_VI2D(v) (olc::vi2d(v.x, v.y))
 #define TO_VF2D(v) (toVf2d(v))
 #define TO_OLC_VF2D(v) (olc::vf2d(v.x, v.y))
 #define TO_PIXEL(p) (toPixel(p))
@@ -71,6 +79,13 @@ static inline RCode toRCode(olc::rcode code) {
     default:
       return RCode::FAIL;
   }
+}
+
+static inline Vi2d toVi2d(olc::vi2d v) {
+  Vi2d st;
+  st.x = v.x;
+  st.y = v.y;
+  return st;
 }
 
 static inline Vf2d toVf2d(olc::vf2d v) {

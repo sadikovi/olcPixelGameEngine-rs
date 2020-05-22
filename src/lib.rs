@@ -40,6 +40,7 @@ mod cpp;
 
 // Public export of cpp module structs and enums so they can be used as an API.
 pub use cpp::PixelMode;
+pub use cpp::Vi2d;
 pub use cpp::Vf2d;
 pub use cpp::Pixel;
 pub use cpp::HWButton;
@@ -49,6 +50,7 @@ pub use cpp::SpriteFlip;
 
 use std::ffi::CString;
 use std::fmt;
+use std::ops;
 
 //----------------------------------
 // Private runnable API
@@ -102,10 +104,82 @@ extern "C" fn onUserDestroy(binding: *mut cpp::c_void) -> bool {
 // Public API
 //----------------------------------
 
-impl Vf2d {
-  /// Creates new Vf2d struct.
-  pub fn new(x: f32, y: f32) -> Self {
+impl<T> cpp::V2d<T> {
+  /// Creates new V2d struct.
+  pub fn new(x: T, y: T) -> Self {
     Self { x, y }
+  }
+}
+
+impl<T> From<(T, T)> for cpp::V2d<T> {
+  fn from(tuple: (T, T)) -> Self {
+    Self { x: tuple.0, y: tuple.1 }
+  }
+}
+
+impl<T: ops::Add<Output = T>> ops::Add for cpp::V2d<T> {
+  type Output = Self;
+
+  fn add(self, other: Self) -> Self::Output {
+    Self { x: self.x + other.x, y: self.y + other.y }
+  }
+}
+
+impl<T: ops::AddAssign> ops::AddAssign for cpp::V2d<T> {
+  fn add_assign(&mut self, other: Self) {
+    self.x += other.x;
+    self.y += other.y;
+  }
+}
+
+impl<T: ops::Sub<Output = T>> ops::Sub for cpp::V2d<T> {
+  type Output = Self;
+
+  fn sub(self, other: Self) -> Self::Output {
+    Self { x: self.x - other.x, y: self.y - other.y }
+  }
+}
+
+impl<T: ops::SubAssign> ops::SubAssign for cpp::V2d<T> {
+  fn sub_assign(&mut self, other: Self) {
+    self.x -= other.x;
+    self.y -= other.y;
+  }
+}
+
+impl<T: ops::Mul<Output = T>> ops::Mul for cpp::V2d<T> {
+  type Output = Self;
+
+  fn mul(self, other: Self) -> Self::Output {
+    Self { x: self.x * other.x, y: self.y * other.y }
+  }
+}
+
+impl<T: ops::MulAssign> ops::MulAssign for cpp::V2d<T> {
+  fn mul_assign(&mut self, other: Self) {
+    self.x *= other.x;
+    self.y *= other.y;
+  }
+}
+
+impl<T: ops::Div<Output = T>> ops::Div for cpp::V2d<T> {
+  type Output = Self;
+
+  fn div(self, other: Self) -> Self::Output {
+    Self { x: self.x / other.x, y: self.y / other.y }
+  }
+}
+
+impl<T: ops::DivAssign> ops::DivAssign for cpp::V2d<T> {
+  fn div_assign(&mut self, other: Self) {
+    self.x /= other.x;
+    self.y /= other.y;
+  }
+}
+
+impl<T: fmt::Display + fmt::Debug> fmt::Display for cpp::V2d<T> {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "({:?}, {:?})", self.x, self.y)
   }
 }
 
@@ -118,6 +192,12 @@ impl Pixel {
   /// Creates a new pixel with RGB value.
   pub const fn rgb(r: u8, g: u8, b: u8) -> Self {
     Self { r, g, b, a: 0xFF }
+  }
+}
+
+impl fmt::Display for Pixel {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "(R: {} G: {} B: {} A: {})", self.r, self.g, self.b, self.a)
   }
 }
 
@@ -686,4 +766,117 @@ pub fn clear(p: Pixel) {
 /// Clears the rendering back buffer.
 pub fn clear_buffer(p: Pixel, depth: bool) {
   unsafe { cpp::ClearBuffer(p, depth) }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  // Pixel tests
+
+  #[test]
+  fn test_pixel_display() {
+    let p = Pixel::rgba(1, 2, 3, 4);
+    assert_eq!(&format!("{}", p), "(R: 1 G: 2 B: 3 A: 4)");
+  }
+
+  // Vi2d tests
+
+  #[test]
+  fn test_vi2d_create() {
+    let a = Vi2d { x: 1, y: 2 };
+    let b: Vi2d = (1i32, 2i32).into();
+    let c = Vi2d::new(1, 2);
+    assert_eq!(a, b);
+    assert_eq!(a, c);
+  }
+
+  #[test]
+  fn test_vi2d_display() {
+    let a = Vi2d::new(2, 3);
+    assert_eq!(&format!("{}", a), "(2, 3)");
+  }
+
+  #[test]
+  fn test_vi2d_add() {
+    let mut res = Vi2d::new(1, 2) + Vi2d::new(3, 4);
+    assert_eq!(res, Vi2d::new(4, 6));
+    res += Vi2d::new(1, 1);
+    assert_eq!(res, Vi2d::new(5, 7));
+  }
+
+  #[test]
+  fn test_vi2d_sub() {
+    let mut res = Vi2d::new(4, 5) - Vi2d::new(3, 4);
+    assert_eq!(res, Vi2d::new(1, 1));
+    res -= Vi2d::new(1, 1);
+    assert_eq!(res, Vi2d::new(0, 0));
+  }
+
+  #[test]
+  fn test_vi2d_mul() {
+    let mut res = Vi2d::new(4, 5) * Vi2d::new(3, 4);
+    assert_eq!(res, Vi2d::new(12, 20));
+    res *= Vi2d::new(2, 3);
+    assert_eq!(res, Vi2d::new(24, 60));
+  }
+
+  #[test]
+  fn test_vi2d_div() {
+    let mut res = Vi2d::new(8, 6) / Vi2d::new(2, 3);
+    assert_eq!(res, Vi2d::new(4, 2));
+    res /= Vi2d::new(2, 2);
+    assert_eq!(res, Vi2d::new(2, 1));
+  }
+
+  // Vf2d tests
+
+  #[test]
+  fn test_vf2d_create() {
+    let a = Vf2d { x: 1.0, y: 2.0 };
+    let b: Vf2d = (1.0f32, 2.0f32).into();
+    let c = Vf2d::new(1.0, 2.0);
+    assert_eq!(a, b);
+    assert_eq!(a, c);
+  }
+
+  #[test]
+  fn test_vf2d_display() {
+    let a = Vf2d::new(2.0, 3.0);
+    assert_eq!(&format!("{}", a), "(2.0, 3.0)");
+    let a = Vf2d::new(2.1, 3.1);
+    assert_eq!(&format!("{}", a), "(2.1, 3.1)");
+  }
+
+  #[test]
+  fn test_vf2d_add() {
+    let mut res = Vf2d::new(1.0, 2.0) + Vf2d::new(3.0, 4.0);
+    assert_eq!(res, Vf2d::new(4.0, 6.0));
+    res += Vf2d::new(1.0, 1.0);
+    assert_eq!(res, Vf2d::new(5.0, 7.0));
+  }
+
+  #[test]
+  fn test_vf2d_sub() {
+    let mut res = Vf2d::new(4.0, 5.0) - Vf2d::new(3.0, 4.0);
+    assert_eq!(res, Vf2d::new(1.0, 1.0));
+    res -= Vf2d::new(1.0, 1.0);
+    assert_eq!(res, Vf2d::new(0.0, 0.0));
+  }
+
+  #[test]
+  fn test_vf2d_mul() {
+    let mut res = Vf2d::new(4.0, 5.0) * Vf2d::new(3.0, 4.0);
+    assert_eq!(res, Vf2d::new(12.0, 20.0));
+    res *= Vf2d::new(2.0, 3.0);
+    assert_eq!(res, Vf2d::new(24.0, 60.0));
+  }
+
+  #[test]
+  fn test_vf2d_div() {
+    let mut res = Vf2d::new(8.0, 6.0) / Vf2d::new(2.0, 3.0);
+    assert_eq!(res, Vf2d::new(4.0, 2.0));
+    res /= Vf2d::new(2.0, 2.0);
+    assert_eq!(res, Vf2d::new(2.0, 1.0));
+  }
 }
