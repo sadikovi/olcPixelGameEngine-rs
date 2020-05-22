@@ -1,11 +1,9 @@
 extern crate olc_pixel_game_engine;
 
-use std::ops::Mul;
-
 use crate::olc_pixel_game_engine as olc;
 
 // Tile size is 32x32 in dungeon.png.
-const TILE_SIZE: Vi2d = Vi2d { x: 32, y: 32 };
+const TILE_SIZE: olc::Vi2d = olc::Vi2d { x: 32, y: 32 };
 
 const FLOOR: usize = 0;
 const TOP: usize = 1;
@@ -14,42 +12,27 @@ const SOUTH: usize = 3;
 const WEST: usize = 4;
 const EAST: usize = 5;
 
-// 2D vector point.
-#[derive(Clone, Copy, Debug, Default)]
-struct Vi2d {
-  x: i32,
-  y: i32
-}
-
-impl Mul for Vi2d {
-  type Output = Self;
-
-  fn mul(self, rhs: Self) -> Self {
-    Self { x: self.x * rhs.x, y: self.y * rhs.y }
-  }
-}
-
 #[derive(Clone, Debug, Default)]
 struct Cell {
   wall: bool,
-  id: [Vi2d; 6]
+  id: [olc::Vi2d; 6]
 }
 
 struct World {
   cells: Vec<Cell>,
   null_cell: Cell, // dummy cell to return when the index is out of bound
-  size: Vi2d,
+  size: olc::Vi2d,
 }
 
 impl World {
   pub fn create(width: i32, height: i32) -> Self {
     let cells = vec![Cell::default(); (width * height) as usize];
     let null_cell = Cell::default();
-    let size = Vi2d { x: width, y: height };
+    let size = olc::Vi2d { x: width, y: height };
     Self { cells, size, null_cell }
   }
 
-  pub fn get_cell_mut(&mut self, v: Vi2d) -> &mut Cell {
+  pub fn get_cell_mut(&mut self, v: olc::Vi2d) -> &mut Cell {
     if v.x >= 0 && v.x < self.size.x && v.y >= 0 && v.y < self.size.y {
       &mut self.cells[(v.y * self.size.x + v.x) as usize]
     } else {
@@ -68,7 +51,7 @@ struct Vec3d {
 #[derive(Clone, Debug)]
 struct Quad {
   points: [Vec3d; 4],
-  tile: Vi2d
+  tile: olc::Vi2d
 }
 
 struct WarpedDungeon {
@@ -80,9 +63,9 @@ struct WarpedDungeon {
   camera_angle_target: f32,
   camera_pitch: f32,
   camera_zoom: f32,
-  cursor: Vi2d,
+  cursor: olc::Vi2d,
   visible: [bool; 6],
-  tile_cursor: Vi2d
+  tile_cursor: olc::Vi2d
 }
 
 impl olc::Application for WarpedDungeon {
@@ -94,13 +77,13 @@ impl olc::Application for WarpedDungeon {
 
     for x in 0..self.world.size.x {
       for y in 0..self.world.size.y {
-        self.world.get_cell_mut(Vi2d { x, y }).wall = false;
-        self.world.get_cell_mut(Vi2d { x, y }).id[FLOOR] = Vi2d { x: 0, y: 0 } * TILE_SIZE;
-        self.world.get_cell_mut(Vi2d { x, y }).id[TOP] = Vi2d { x: 2, y: 0 } * TILE_SIZE;
-        self.world.get_cell_mut(Vi2d { x, y }).id[NORTH] = Vi2d { x: 6, y: 6 } * TILE_SIZE;
-        self.world.get_cell_mut(Vi2d { x, y }).id[SOUTH] = Vi2d { x: 6, y: 6 } * TILE_SIZE;
-        self.world.get_cell_mut(Vi2d { x, y }).id[WEST] = Vi2d { x: 6, y: 6 } * TILE_SIZE;
-        self.world.get_cell_mut(Vi2d { x, y }).id[EAST] = Vi2d { x: 6, y: 6 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).wall = false;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[FLOOR] = olc::Vi2d { x: 0, y: 0 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[TOP] = olc::Vi2d { x: 2, y: 0 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[NORTH] = olc::Vi2d { x: 6, y: 6 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[SOUTH] = olc::Vi2d { x: 6, y: 6 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[WEST] = olc::Vi2d { x: 6, y: 6 } * TILE_SIZE;
+        self.world.get_cell_mut(olc::Vi2d { x, y }).id[EAST] = olc::Vi2d { x: 6, y: 6 } * TILE_SIZE;
       }
     }
 
@@ -110,12 +93,11 @@ impl olc::Application for WarpedDungeon {
   fn on_user_update(&mut self, elapsed_time: f32) -> Result<(), olc::Error> {
     // Edit mode - Selection from tile sprite sheet
     if olc::get_key(olc::Key::TAB).held {
-      let mouse = Vi2d { x: olc::get_mouse_x(), y: olc::get_mouse_y() };
+      let mouse = olc::Vi2d { x: olc::get_mouse_x(), y: olc::get_mouse_y() };
       olc::draw_sprite(0, 0, self.rend_all_walls.as_ref().unwrap().sprite());
       olc::draw_rect(self.tile_cursor.x * TILE_SIZE.x, self.tile_cursor.y * TILE_SIZE.y, TILE_SIZE.x, TILE_SIZE.y, olc::YELLOW);
       if olc::get_mouse(0).pressed {
-        self.tile_cursor.x = mouse.x / TILE_SIZE.x;
-        self.tile_cursor.y = mouse.y / TILE_SIZE.y;
+        self.tile_cursor = mouse / TILE_SIZE;
       }
 
       return Ok(())
@@ -180,7 +162,7 @@ impl olc::Application for WarpedDungeon {
     // Create dummy cube to extract visible face information.
     // Cull faces that cannot be seen.
     let cull_cube = Self::create_cube(
-      Vi2d { x: 0, y: 0 },
+      olc::Vi2d { x: 0, y: 0 },
       self.camera_angle,
       self.camera_pitch,
       self.camera_zoom,
@@ -191,7 +173,7 @@ impl olc::Application for WarpedDungeon {
     for y in 0..self.world.size.y {
       for x in 0..self.world.size.x {
         self.get_quads(
-          Vi2d { x, y },
+          olc::Vi2d { x, y },
           self.camera_angle,
           self.camera_pitch,
           self.camera_zoom,
@@ -257,7 +239,7 @@ impl olc::Application for WarpedDungeon {
 }
 
 impl WarpedDungeon {
-  fn create_cube(cell: Vi2d, angle: f32, pitch: f32, scale: f32, camera: Vec3d) -> [Vec3d; 8] {
+  fn create_cube(cell: olc::Vi2d, angle: f32, pitch: f32, scale: f32, camera: Vec3d) -> [Vec3d; 8] {
     let mut unit_cube = [Vec3d::default(); 8];
     let mut rot_cube = [Vec3d::default(); 8];
     let mut world_cube = [Vec3d::default(); 8];
@@ -308,7 +290,7 @@ impl WarpedDungeon {
     proj_cube
   }
 
-  fn get_quads(&mut self, cell: Vi2d, camera_angle: f32, camera_pitch: f32, camera_zoom: f32, camera_pos: Vec3d, render: &mut Vec<Quad>) {
+  fn get_quads(&mut self, cell: olc::Vi2d, camera_angle: f32, camera_pitch: f32, camera_zoom: f32, camera_pos: Vec3d, render: &mut Vec<Quad>) {
     let cube = Self::create_cube(cell, camera_angle, camera_pitch, camera_zoom, camera_pos);
     let cell = self.world.get_cell_mut(cell);
 
@@ -329,19 +311,11 @@ impl WarpedDungeon {
   }
 
   fn calculate_visible_faces(&mut self, cube: &[Vec3d; 8]) {
-    let sub = |v1: olc::Vf2d, v2: olc::Vf2d| {
-      olc::Vf2d::new(v1.x - v2.x, v1.y - v2.y)
-    };
-
-    let cross = |v1: olc::Vf2d, v2: olc::Vf2d| {
-      v1.x * v2.y - v1.y * v2.x
-    };
-
     let check_normal = |v1: usize, v2: usize, v3: usize| {
       let a = olc::Vf2d::new(cube[v1].x, cube[v1].y);
       let b = olc::Vf2d::new(cube[v2].x, cube[v2].y);
       let c = olc::Vf2d::new(cube[v3].x, cube[v3].y);
-      cross(sub(b, a), sub(c, a)) > 0.0
+      (b - a).cross(c - a) > 0.0
     };
 
     self.visible[FLOOR] = check_normal(4, 0, 1);
@@ -363,9 +337,9 @@ fn main() {
     camera_angle_target: 0.0,
     camera_pitch: 5.5,
     camera_zoom: 16.0,
-    cursor: Vi2d { x: 0, y: 0 },
+    cursor: olc::Vi2d::new(0, 0),
     visible: [false; 6],
-    tile_cursor: Vi2d { x: 0, y: 0 }
+    tile_cursor: olc::Vi2d::new(0, 0)
   };
 
   olc::start("Warped Dungeon", &mut example, 640, 480, 2, 2).unwrap();
