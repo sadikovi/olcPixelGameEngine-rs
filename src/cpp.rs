@@ -39,7 +39,7 @@ pub enum PixelMode {
 /// instead.
 /// This struct is only exported to show available functions and implemented traits.
 #[repr(C)]
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct V2d<T> {
   pub x: T,
   pub y: T
