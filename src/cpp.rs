@@ -41,9 +41,31 @@ pub struct V2d<T> {
   pub y: T
 }
 
-/// Mirror of `olc::vf2d`. A 2D integer vector type.
+/// Mirror of `olc::vi2d`. A 2D integer vector type.
+/// Implements `std::ops::Add`, `std::ops::Sub`, `std::ops::Mul`, and `std::ops::Div` as well as
+/// all their assignment equivalents.
+///
+/// Example usage:
+/// ```
+/// # extern crate olc_pixel_game_engine;
+/// # use crate::olc_pixel_game_engine::Vi2d;
+/// let mut a = Vi2d::new(1, 2) + Vi2d { x: 3, y: 4 };
+/// a *= (2i32, 2i32).into();
+/// assert_eq!(a, Vi2d::new(8, 12));
+/// ```
 pub type Vi2d = V2d<i32>;
 /// Mirror of `olc::vf2d`. A 2D float vector type.
+/// Implements `std::ops::Add`, `std::ops::Sub`, `std::ops::Mul`, and `std::ops::Div` as well as
+/// all their assignment equivalents.
+///
+/// Example usage:
+/// ```
+/// # extern crate olc_pixel_game_engine;
+/// # use crate::olc_pixel_game_engine::Vf2d;
+/// let mut a = Vf2d::new(10.0, 20.0) - Vf2d { x: 5.0, y: 5.0 };
+/// a /= (5f32, 5f32).into();
+/// assert_eq!(a, Vf2d::new(1.0, 3.0));
+/// ```
 pub type Vf2d = V2d<c_float>;
 
 /// Mirror of `olc::Pixel`. Represents a 32-bit RGBA value.
