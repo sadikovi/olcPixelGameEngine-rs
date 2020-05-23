@@ -82,7 +82,7 @@ extern "C" fn onUserCreate(binding: *mut cpp::c_void) -> bool {
     },
     Ok(_) => true
   };
-  Box::leak(b); // always leak the binding, it will be cleaned up in the main function
+  Box::leak(b); // always leak the binding, it will be cleaned up in onUserDestroy/main function
   res
 }
 
@@ -96,7 +96,7 @@ extern "C" fn onUserUpdate(binding: *mut cpp::c_void, elapsed_time: cpp::c_float
     },
     Ok(_) => true
   };
-  Box::leak(b); // always leak the binding, it will be cleaned up in the main function
+  Box::leak(b); // always leak the binding, it will be cleaned up in onUserDestroy/main function
   res
 }
 
