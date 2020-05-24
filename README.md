@@ -54,7 +54,7 @@ fn main() {
 I recommend checking out the documentation to see what APIs are available.
 
 ## Examples
-You can look at the examples in [examples/](./examples) directory to get a sense of available APIs,  
+You can look at the examples in [examples/](./examples) directory to get a sense of available APIs,
 make sure to also check out the docs.
 
 I will be adding more examples in that directory. Some of them are direct ports of
