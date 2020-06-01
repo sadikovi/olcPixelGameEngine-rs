@@ -604,41 +604,87 @@ pub fn get_fps() -> u32 {
 }
 
 /// Layer API.
-/// Sets layer as the main draw target.
-pub fn set_draw_target(layer: u8) {
-  unsafe { cpp::SetDrawTarget(layer) }
-}
+/// Allows creation and manipulation of layers including the primary draw target, a layer 0.
+/// ```
+/// # extern crate olc_pixel_game_engine;
+/// # use crate::olc_pixel_game_engine as olc;
+/// #
+/// let layer_id = olc::layer::create_layer();
+/// // By default, the layer is disabled.
+/// olc::layer::enable_layer(1, true);
+///
+/// olc::layer::set_draw_target(layer_id);
+///
+/// // Will be drawn onto the layer 1.
+/// olc::draw(0, 0, olc::RED);
+///
+/// // Returns the current layer description.
+/// let layer_desc = olc::layer::get_draw_target(1);
+///
+/// // Reset to the primary draw target.
+/// olc::layer::set_primary_draw_target();
+/// ```
+pub mod layer {
+  use super::*;
 
-/// Layer API.
-/// Enables/disables layer.
-pub fn enable_layer(layer: u8, b: bool) {
-  unsafe { cpp::EnableLayer(layer, b) }
-}
+  pub use cpp::LayerDesc;
 
-/// Layer API.
-/// Sets layer offset.
-pub fn set_layer_offset(layer: u8, x: f32, y: f32) {
-  unsafe { cpp::SetLayerOffset(layer, x, y) }
-}
+  impl LayerDesc {
+    /// Returns the pixel set for (x, y) coordinates.
+    pub fn get_pixel(&self, x: i32, y: i32) -> Pixel {
+      unsafe { cpp::SpriteGetPixel(&self.sprite, x, y) }
+    }
+  }
 
-/// Layer API.
-/// Sets layer scale.
-pub fn set_layer_scale(layer: u8, x: f32, y: f32) {
-  unsafe { cpp::SetLayerScale(layer, x, y) }
-}
+  /// Creates a new layer.
+  pub fn create_layer() -> u8 {
+    // Layer is supposed to be at most u8
+    let layer = unsafe { cpp::CreateLayer() };
+    layer as u8
+  }
 
-/// Layer API.
-/// Sets layer tint.
-pub fn set_layer_tint(layer: u8, tint: Pixel) {
-  unsafe { cpp::SetLayerTint(layer, tint) }
-}
+  /// Sets layer as the main draw target.
+  /// After calling this function, all of the drawing routines will be projected onto the layer.
+  pub fn set_draw_target(layer: u8) {
+    unsafe { cpp::SetDrawTarget(layer) }
+  }
 
-/// Layer API.
-/// Creates a new layer.
-pub fn create_layer() -> u8 {
-  // Layer is supposed to be at most u8
-  let layer = unsafe { cpp::CreateLayer() };
-  layer as u8
+  /// Sets the primary layer (index 0, the default layer) as the main draw target.
+  /// This is equivalent to `olc::SetDrawTarget(nullptr)` in the pixel game engine.
+  pub fn set_primary_draw_target() {
+    unsafe { cpp::SetPrimaryDrawTarget() }
+  }
+
+  /// Returns layer description for the selected layer.
+  pub fn get_draw_target(layer: u8) -> LayerDesc {
+    unsafe { cpp::GetDrawTarget(layer) }
+  }
+
+  /// Returns description of the primary layer (index 0, the default layer).
+  /// This is equivalent to `olc::GetDrawTarget(0)` in the pixel game engine.
+  pub fn get_primary_draw_target() -> LayerDesc {
+    unsafe { cpp::GetPrimaryDrawTarget() }
+  }
+
+  /// Enables/disables layer.
+  pub fn enable_layer(layer: u8, b: bool) {
+    unsafe { cpp::EnableLayer(layer, b) }
+  }
+
+  /// Sets layer offset.
+  pub fn set_layer_offset(layer: u8, x: f32, y: f32) {
+    unsafe { cpp::SetLayerOffset(layer, x, y) }
+  }
+
+  /// Sets layer scale.
+  pub fn set_layer_scale(layer: u8, x: f32, y: f32) {
+    unsafe { cpp::SetLayerScale(layer, x, y) }
+  }
+
+  /// Sets layer tint.
+  pub fn set_layer_tint(layer: u8, tint: Pixel) {
+    unsafe { cpp::SetLayerTint(layer, tint) }
+  }
 }
 
 /// Changes the pixel mode for different optimisations.

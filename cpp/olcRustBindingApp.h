@@ -58,6 +58,15 @@ typedef struct {
   olc::Decal* olc_decal;
 } Decal;
 
+typedef struct {
+  uint8_t id;
+  Vf2d offset;
+  Vf2d scale;
+  Pixel tint;
+  bool shown;
+  Sprite sprite;
+} LayerDesc;
+
 #define TO_RCODE(code) (toRCode(code))
 #define TO_VI2D(v) (toVi2d(v))
 #define TO_OLC_VI2D(v) (olc::vi2d(v.x, v.y))
@@ -70,6 +79,7 @@ typedef struct {
 #define TO_OLC_SPRITE(s) (s->olc_sprite)
 #define TO_DECAL(d) (toDecal(d))
 #define TO_OLC_DECAL(d) (d->olc_decal)
+#define TO_LAYER_DESC(id, l) (toLayerDesc(id, l))
 
 static inline RCode toRCode(olc::rcode code) {
   switch (code) {
@@ -122,6 +132,17 @@ static inline Decal toDecal(olc::Decal* ptr) {
   Decal d;
   d.olc_decal = ptr;
   return d;
+}
+
+static inline LayerDesc toLayerDesc(uint8_t id, olc::LayerDesc* l) {
+  LayerDesc ld;
+  ld.id = id;
+  ld.offset = TO_VF2D(l->vOffset);
+  ld.scale = TO_VF2D(l->vScale);
+  ld.tint = TO_PIXEL(l->tint);
+  ld.shown = l->bShow;
+  ld.sprite = TO_SPRITE(l->pDrawTarget);
+  return ld;
 }
 
 // Useful utility functions
@@ -201,11 +222,13 @@ void SetScreenSize(int w, int h);
 uint32_t GetFPS();
 
 void SetDrawTarget(uint8_t layer);
+void SetPrimaryDrawTarget();
+LayerDesc GetDrawTarget(uint8_t layer);
+LayerDesc GetPrimaryDrawTarget();
 void EnableLayer(uint8_t layer, bool b);
 void SetLayerOffset(uint8_t layer, float x, float y);
 void SetLayerScale(uint8_t layer, float x, float y);
 void SetLayerTint(uint8_t layer, const Pixel& tint);
-
 // TODO: std::vector<LayerDesc>& GetLayers();
 uint32_t CreateLayer();
 

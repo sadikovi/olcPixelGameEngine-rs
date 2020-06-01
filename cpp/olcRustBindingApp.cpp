@@ -91,11 +91,20 @@ void SetScreenSize(int w, int h) { app.SetScreenSize(w, h); }
 uint32_t GetFPS() { return app.GetFPS(); }
 
 void SetDrawTarget(uint8_t layer) { app.SetDrawTarget(layer); }
+void SetPrimaryDrawTarget() { app.SetDrawTarget(nullptr); }
+LayerDesc GetDrawTarget(uint8_t layer) {
+  if (layer < app.GetLayers().size()) {
+    return TO_LAYER_DESC(layer, &app.GetLayers()[layer]);
+  } else {
+    LayerDesc l;
+    return l;
+  }
+}
+LayerDesc GetPrimaryDrawTarget() { return GetDrawTarget(0); }
 void EnableLayer(uint8_t layer, bool b) { app.EnableLayer(layer, b); }
 void SetLayerOffset(uint8_t layer, float x, float y) { app.SetLayerOffset(layer, x, y); }
 void SetLayerScale(uint8_t layer, float x, float y) { app.SetLayerScale(layer, x, y); }
 void SetLayerTint(uint8_t layer, const Pixel& tint) { app.SetLayerTint(layer, TO_OLC_PIXEL(tint)); }
-
 uint32_t CreateLayer() { return app.CreateLayer(); }
 
 void SetPixelMode(PixelMode m) { app.SetPixelMode(m); }

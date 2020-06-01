@@ -145,6 +145,25 @@ pub struct Decal {
   olc_decal: *const c_void
 }
 
+/// Mirror of the `olc::LayerDesc`. Contains layer description, must be treated as read-only since
+/// no modifications to the object are propagated back to the engine.
+/// Does not support Clone and Copy, used as a container for layer information.
+#[repr(C)]
+#[derive(Debug, PartialEq)]
+pub struct LayerDesc {
+  /// Layer id.
+  pub id: u8,
+  /// Layer offset.
+  pub offset: Vf2d,
+  /// Layer scale.
+  pub scale: Vf2d,
+  /// Layer tint.
+  pub tint: Pixel,
+  /// Whether or not this layer is enabled to be rendered.
+  pub shown: bool,
+  pub sprite: Sprite // layer backing sprite
+}
+
 #[link(name="olcRustBindingApp", kind="static")]
 extern "C" {
   /// Utility c++ rand function.
@@ -202,13 +221,15 @@ extern "C" {
   // Gets the current Frames Per Second
   pub fn GetFPS() -> u32;
 
+  pub fn CreateLayer() -> u32;
+  pub fn SetPrimaryDrawTarget();
   pub fn SetDrawTarget(layer: u8);
+  pub fn GetDrawTarget(layer: u8) -> LayerDesc;
+  pub fn GetPrimaryDrawTarget() -> LayerDesc;
   pub fn EnableLayer(layer: u8, b: bool);
   pub fn SetLayerOffset(layer: u8, x: c_float, y: c_float);
   pub fn SetLayerScale(layer: u8, x: c_float, y: c_float);
   pub fn SetLayerTint(layer: u8, tint: Pixel);
-
-  pub fn CreateLayer() -> u32;
 
   // Change the pixel mode for different optimisations
   // olc::Pixel::NORMAL = No transparency
