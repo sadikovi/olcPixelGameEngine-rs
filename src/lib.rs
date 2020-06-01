@@ -272,6 +272,12 @@ pub struct Sprite {
 }
 
 impl Sprite {
+  /// Returns a new empty sprite, alias for [`Sprite::new`](Sprite::new).
+  /// This can be used to initialise a sprite instead of using [`Option`](Option).
+  pub fn empty() -> Self {
+    Self::new()
+  }
+
   /// Creates a new empty sprite.
   pub fn new() -> Self {
     let inner = unsafe { cpp::SpriteNullConstructor() };
@@ -372,6 +378,12 @@ pub struct Decal {
 }
 
 impl Decal {
+  /// Creates a new empty decal.
+  /// This can be used for initialisation insted of using [`Option`](Option).
+  pub fn empty() -> Self {
+    Self::new(Sprite::new())
+  }
+
   /// Creates a new decal from a sprite.
   pub fn new(sprite: Sprite) -> Self {
     let inner = unsafe { cpp::DecalConstructor(&sprite.inner) };
