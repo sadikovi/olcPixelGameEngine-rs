@@ -1,5 +1,6 @@
 extern crate olc_pixel_game_engine;
 
+use std::time::SystemTime;
 use crate::olc_pixel_game_engine as olc;
 
 const UNKNOWN: i32 = -1;
@@ -99,6 +100,9 @@ impl MineSweeper {
 
 impl olc::Application for MineSweeper {
   fn on_user_create(&mut self) -> Result<(), olc::Error> {
+    let secs = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH).unwrap().as_secs();
+    println!("secs: {}", secs);
+    olc::c_srand(secs as u32);
     self.sprite = olc::Sprite::from_image("examples/minesweeper.png")?;
     self.gen_board();
 
