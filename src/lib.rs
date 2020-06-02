@@ -502,7 +502,14 @@ pub fn start_with_full_screen_and_vsync(
   }
 }
 
-/// Utility C++ rand function.
+/// Sets seed for C++ rand function, equivalent of `srand(seed)`.
+/// See http://www.cplusplus.com/reference/cstdlib/srand for more information.
+pub fn c_srand(seed: u32) {
+  unsafe { cpp::c_srand(seed) }
+}
+
+/// Utility C++ rand function, equivalent of `rand()`.
+/// See http://www.cplusplus.com/reference/cstdlib/rand for more information.
 pub fn c_rand() -> i32 {
   unsafe { cpp::c_rand() }
 }

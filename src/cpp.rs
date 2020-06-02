@@ -166,7 +166,10 @@ pub struct LayerDesc {
 
 #[link(name="olcRustBindingApp", kind="static")]
 extern "C" {
-  /// Utility c++ rand function.
+  /// Utility C++ srand function.
+  pub fn c_srand(seed: u32);
+
+  /// Utility C++ rand function.
   pub fn c_rand() -> i32;
 
   /// Starts the main game loop.

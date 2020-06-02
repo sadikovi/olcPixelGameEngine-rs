@@ -145,6 +145,7 @@ static inline LayerDesc toLayerDesc(uint8_t id, olc::LayerDesc* l) {
   return ld;
 }
 
+void c_srand(uint32_t seed);
 // Useful utility functions
 int32_t c_rand();
 

@@ -36,6 +36,11 @@ public:
 extern "C" {
 #endif
 
+// C++ srand utility function
+void c_srand(uint32_t seed) {
+  srand(seed);
+}
+
 // C++ rand utility function
 int32_t c_rand() {
   return rand();
