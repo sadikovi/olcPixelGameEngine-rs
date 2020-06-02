@@ -5,12 +5,12 @@ use crate::olc_pixel_game_engine as olc;
 const UNKNOWN: i32 = -1;
 const MINE: i32 = -2;
 const BLOWN: i32 = -3;
-const SAFE: i32 = !0x7fffffff;
 
 struct MineSweeper {
   width: i32,
   height: i32,
-  depth: i32,
+  time: f32,
+  mines: i32,
   board: Vec<(i32, bool)>,
   game_over: i32,
   sprite: olc::Sprite,
@@ -21,7 +21,8 @@ impl MineSweeper {
     Self {
       width: 10,
       height: 10,
-      depth: 5,
+      time: 0.0,
+      mines: 15,
       board: Vec::new(),
       game_over: 0,
       sprite: olc::Sprite::new(),
@@ -30,12 +31,23 @@ impl MineSweeper {
 
   fn gen_board(&mut self) {
     self.board = vec![(UNKNOWN, false); (self.width * self.height) as usize];
+    let mut mine_pos = Vec::new();
     for x in 0..self.width {
       for y in 0..self.height {
-        if olc::c_rand() % 8 == 0 {
-          self.board[(y * self.width + x) as usize] = (MINE, false);
-        }
+        mine_pos.push((x, y));
       }
+    }
+
+    let mut left = self.mines;
+    while left > 0 {
+      let idx = olc::c_rand() as usize % mine_pos.len();
+      let (x, y) = mine_pos[idx];
+      self.board[(y * self.width + x) as usize] = (MINE, false);
+      if idx < mine_pos.len() - 1 {
+        mine_pos[idx] = mine_pos[mine_pos.len() - 1];
+      }
+      mine_pos.resize(mine_pos.len() - 1, (0, 0));
+      left -= 1;
     }
   }
 
@@ -54,8 +66,8 @@ impl MineSweeper {
   }
 
   // Returns true if we explored successfully, false if (x, y) is a mine.
-  fn explore(&mut self, x: i32, y: i32, depth: i32) -> bool {
-    if x >= 0 && x < self.width && y >= 0 && y < self.height && depth > 0 {
+  fn explore(&mut self, x: i32, y: i32) -> bool {
+    if x >= 0 && x < self.width && y >= 0 && y < self.height {
       let idx = (y * self.width + x) as usize;
 
       if self.board[idx].0 == UNKNOWN && !self.board[idx].1 {
@@ -63,8 +75,16 @@ impl MineSweeper {
 
         for i in -1..2 {
           for j in -1..2 {
-            if !self.explore(x + i, y + j, depth - 1) {
+            if self.get(x + i, y + j).0 == MINE {
               self.board[idx] = (self.board[idx].0 + 1, self.board[idx].1);
+            }
+          }
+        }
+
+        if self.board[idx].0 == 0 {
+          for i in -1..2 {
+            for j in -1..2 {
+              self.explore(x + i, y + j);
             }
           }
         }
@@ -85,19 +105,25 @@ impl olc::Application for MineSweeper {
     Ok(())
   }
 
-  fn on_user_update(&mut self, _elapsed_time: f32) -> Result<(), olc::Error> {
+  fn on_user_update(&mut self, elapsed_time: f32) -> Result<(), olc::Error> {
     olc::clear(olc::BLACK);
 
     if self.game_over == 0 {
+      self.time += elapsed_time;
+
       let (mx, my) = (olc::get_mouse_x(), olc::get_mouse_y());
       let (gx, gy) = (mx / 8, my / 8); // game coordinates
 
+      // Setting a mine flag
       if olc::get_mouse(1).released {
         let (v, safe) = self.get(gx, gy);
-        self.set(gx, gy, v, !safe);
+        if safe || self.mines > 0 {
+          self.set(gx, gy, v, !safe);
+          self.mines += if safe { 1 } else { -1 };
+        }
       }
 
-      if olc::get_mouse(0).released && !self.get(gx, gy).1 && !self.explore(gx, gy, self.depth) {
+      if olc::get_mouse(0).released && !self.get(gx, gy).1 && !self.explore(gx, gy) {
         self.set(gx, gy, BLOWN, false);
         self.game_over = 1;
       }
@@ -151,10 +177,13 @@ impl olc::Application for MineSweeper {
       }
     }
 
+    olc::draw_string(85, 10, &format!("Time: {}", self.time as i32), olc::WHITE)?;
+    olc::draw_string(85, 20, &format!("Flags: {}", self.mines), olc::WHITE)?;
+
     if self.game_over == 1 {
-      olc::draw_string(10, olc::screen_height() - 10, &"GAME OVER", olc::WHITE)?;
+      olc::draw_string(85, 40, &"GAME OVER", olc::RED)?;
     } else if self.game_over == 2 {
-      olc::draw_string(10, olc::screen_height() - 10, &"YOU WON!", olc::WHITE)?;
+      olc::draw_string(85, 40, &"YOU WON!", olc::GREEN)?;
     }
 
     Ok(())
@@ -167,5 +196,5 @@ impl olc::Application for MineSweeper {
 
 fn main() {
   let mut app = MineSweeper::new();
-  olc::start("Mine Sweeper", &mut app, 100, 100, 4, 4).unwrap();
+  olc::start("Mine Sweeper", &mut app, 200, 80, 4, 4).unwrap();
 }
