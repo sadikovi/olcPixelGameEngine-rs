@@ -52,6 +52,17 @@ fn build_rust_binding(root: &Path) {
   println!("cargo:rustc-link-lib=stdc++fs");
 }
 
+#[cfg(target_os = "windows")]
+fn build_rust_binding(root: &Path) {
+  cc::Build::new()
+    .cpp(true)
+    .file(root.join("olcRustBindingApp.cpp"))
+    .flag("-std:c++17")
+    .flag("-permissive-")
+    .warnings(false)
+    .compile("olcRustBindingApp");
+}
+
 // macos:
 // g++ -o olcExampleProgram olcExampleProgram.cpp -I/usr/X11/include -L/usr/X11/lib -lX11 -lGL -lpng -lpthread -std=c++17
 //

@@ -138,7 +138,7 @@ void DrawRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) {
   app.DrawRect(x, y, w, h, TO_OLC_PIXEL(p));
 }
 
-void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) {
+void FillRectangle(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p) {
   app.FillRect(x, y, w, h, TO_OLC_PIXEL(p));
 }
 

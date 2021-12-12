@@ -754,7 +754,7 @@ pub fn draw_rect(x: i32, y: i32, w: i32, h: i32, p: Pixel) {
 
 /// Fills a rectangle at (x, y) to (x+w, y+h).
 pub fn fill_rect(x: i32, y: i32, w: i32, h: i32, p: Pixel) {
-  unsafe { cpp::FillRect(x, y, w, h, p) }
+  unsafe { cpp::FillRectangle(x, y, w, h, p) }
 }
 
 /// Draws a triangle between points (x1, y1), (x2, y2) and (x3, y3).
