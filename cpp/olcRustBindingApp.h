@@ -252,7 +252,7 @@ void FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p);
 // Draws a rectangle at (x,y) to (x+w,y+h)
 void DrawRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p);
 // Fills a rectangle at (x,y) to (x+w,y+h)
-void FillRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p);
+void FillRectangle(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p);
 // Draws a triangle between points (x1,y1), (x2,y2) and (x3,y3)
 void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p);
 // Flat fills a triangle between points (x1,y1), (x2,y2) and (x3,y3)

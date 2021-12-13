@@ -253,7 +253,7 @@ extern "C" {
   // Draws a rectangle at (x, y) to (x+w, y+h)
   pub fn DrawRect(x: i32, y: i32, w: i32, h: i32, p: Pixel);
   // Fills a rectangle at (x, y) to (x+w, y+h)
-  pub fn FillRect(x: i32, y: i32, w: i32, h: i32, p: Pixel);
+  pub fn FillRectangle(x: i32, y: i32, w: i32, h: i32, p: Pixel);
   // Draws a triangle between points (x1, y1), (x2, y2) and (x3, y3)
   pub fn DrawTriangle(x1: i32, y1: i32, x2: i32, y2: i32, x3: i32, y3: i32, p: Pixel);
   // Flat fills a triangle between points (x1, y1), (x2, y2) and (x3, y3)
