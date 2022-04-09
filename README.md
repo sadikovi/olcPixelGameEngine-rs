@@ -9,7 +9,7 @@ I try keeping the methods and constants similar to the original C++ code so the 
 and it is easy to follow along the tutorial videos.
 
 The code builds on Linux, Windows, and macOS/OSX (any 10.x, including older versions, only X11 is required)
-and uses my mac port of pixel game engine https://github.com/sadikovi/olcPixelGameEngine-macos.
+and uses my mac port of pixel game engine https://github.com/sadikovi/olcPixelGameEngine-macos. MacOS users may need to install [XQuartz](https://www.xquartz.org/) for OpenGL support.
 
 You can link the crate as a dependency and extend `Application` trait to run the pixel game engine:
 ```rust
